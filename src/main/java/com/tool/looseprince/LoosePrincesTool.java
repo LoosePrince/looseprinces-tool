@@ -1,0 +1,75 @@
+package com.tool.looseprince;
+
+import net.fabricmc.api.ModInitializer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.tool.looseprince.config.ConfigManager;
+import com.tool.looseprince.feature.FeatureRegistry;
+import com.tool.looseprince.feature.FlyingRuneFeature;
+import com.tool.looseprince.registry.ModItemGroups;
+
+/**
+ * LoosePrince's Tool 模组主类
+ * 负责模组的初始化和功能注册
+ */
+public class LoosePrincesTool implements ModInitializer {
+	public static final String MOD_ID = "looseprinces-tool";
+
+	// 日志记录器，用于向控制台和日志文件写入文本
+	// 使用模组ID作为日志记录器的名称是最佳实践
+	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+	@Override
+	public void onInitialize() {
+		// 当Minecraft处于模组加载就绪状态时运行此代码
+		// 但是，某些内容（如资源）可能仍未初始化
+		// 请谨慎进行
+
+		LOGGER.info("LoosePrince's Tool 模组开始初始化");
+
+		// 初始化配置管理器
+		initializeConfig();
+
+		// 注册创造模式分页
+		ModItemGroups.register();
+
+		// 注册所有功能
+		registerFeatures();
+
+		// 初始化启用的功能
+		initializeFeatures();
+
+		LOGGER.info("LoosePrince's Tool 模组初始化完成");
+	}
+
+	/**
+	 * 初始化配置管理器
+	 */
+	private void initializeConfig() {
+		LOGGER.info("初始化配置管理器");
+		ConfigManager.getInstance(); // 这会触发配置加载
+	}
+
+	/**
+	 * 注册所有功能
+	 */
+	private void registerFeatures() {
+		LOGGER.info("开始注册功能");
+		FeatureRegistry registry = FeatureRegistry.getInstance();
+		
+		// 注册飞行符文功能
+		registry.registerFeature(new FlyingRuneFeature());
+		
+		LOGGER.info("功能注册完成，共注册 {} 个功能", registry.getFeatureCount());
+	}
+
+	/**
+	 * 初始化启用的功能
+	 */
+	private void initializeFeatures() {
+		LOGGER.info("初始化启用的功能");
+		FeatureRegistry.getInstance().initializeEnabledFeatures();
+	}
+}

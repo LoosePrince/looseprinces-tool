@@ -1,0 +1,7 @@
+{
+  "item.looseprinces-tool.flying_rune": "飞行符文",
+  "item.looseprinces-tool.flying_rune.tooltip.line1": "赋予飞行能力的神秘符文",
+  "item.looseprinces-tool.flying_rune.tooltip.line2": "放在背包中即可在生存模式下飞行",
+  "item.looseprinces-tool.flying_rune.tooltip.usage": "放在背包中以启用飞行能力",
+  "itemGroup.looseprinces-tool.main": "LoosePrince的工具箱"
+}

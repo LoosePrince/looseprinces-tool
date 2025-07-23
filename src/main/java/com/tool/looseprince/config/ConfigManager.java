@@ -126,6 +126,13 @@ public class ConfigManager {
         flyingRuneConfig.setOption("allowInEnd", true);
         defaultConfig.setFeatureConfig("flying_rune", flyingRuneConfig);
         
+        // 添加绑定附魔的默认配置
+        FeatureConfig bindingEnchantmentConfig = new FeatureConfig(true);
+        bindingEnchantmentConfig.setOption("preventDrop", true);
+        bindingEnchantmentConfig.setOption("affectAllItems", true);
+        bindingEnchantmentConfig.setOption("maxLevel", 1);
+        defaultConfig.setFeatureConfig("binding_enchantment", bindingEnchantmentConfig);
+        
         return defaultConfig;
     }
     
@@ -147,6 +154,16 @@ public class ConfigManager {
             flyingRuneConfig.setOption("allowInNether", true);
             flyingRuneConfig.setOption("allowInEnd", true);
             config.setFeatureConfig("flying_rune", flyingRuneConfig);
+            needsSave = true;
+        }
+        
+        // 确保绑定附魔配置存在
+        if (config.getFeatureConfig("binding_enchantment") == null) {
+            FeatureConfig bindingEnchantmentConfig = new FeatureConfig(true);
+            bindingEnchantmentConfig.setOption("preventDrop", true);
+            bindingEnchantmentConfig.setOption("affectAllItems", true);
+            bindingEnchantmentConfig.setOption("maxLevel", 1);
+            config.setFeatureConfig("binding_enchantment", bindingEnchantmentConfig);
             needsSave = true;
         }
         

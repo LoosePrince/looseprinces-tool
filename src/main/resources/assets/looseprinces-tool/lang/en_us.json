@@ -3,5 +3,7 @@
   "item.looseprinces-tool.flying_rune.tooltip.line1": "A mystical rune that grants flight",
   "item.looseprinces-tool.flying_rune.tooltip.line2": "Keep in inventory to fly in survival mode",
   "item.looseprinces-tool.flying_rune.tooltip.usage": "Hold in inventory to enable flight",
-  "itemGroup.looseprinces-tool.main": "LoosePrince's Tool"
+  "item.looseprinces-tool.mod_icon": "LoosePrince's Tool",
+  "itemGroup.looseprinces-tool.main": "LoosePrince's Tool",
+  "enchantment.looseprinces-tool.binding": "Binding"
 }

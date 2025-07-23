@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.tool.looseprince.config.ConfigManager;
 import com.tool.looseprince.feature.FeatureRegistry;
 import com.tool.looseprince.feature.FlyingRuneFeature;
+import com.tool.looseprince.feature.BindingEnchantmentFeature;
 import com.tool.looseprince.registry.ModItemGroups;
 
 /**
@@ -61,6 +62,9 @@ public class LoosePrincesTool implements ModInitializer {
 		
 		// 注册飞行符文功能
 		registry.registerFeature(new FlyingRuneFeature());
+		
+		// 注册绑定附魔功能
+		registry.registerFeature(new BindingEnchantmentFeature());
 		
 		LOGGER.info("功能注册完成，共注册 {} 个功能", registry.getFeatureCount());
 	}

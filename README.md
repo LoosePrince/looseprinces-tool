@@ -17,6 +17,10 @@
   - 支持自定义是否允许在下界/末地使用。
   - 可配置是否防止摔落伤害、是否需在背包中。
 
+- **绑定附魔**：
+  - 拥有该附魔的物品在死亡时不会掉落。
+  - 可配置是否生效。
+
 ## 安装方法
 
 1. 安装 [Fabric Loader](https://fabricmc.net/use/) 和 [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)。
@@ -27,23 +31,6 @@
 
 - 配置文件路径：`config/looseprinces-tool.json`
 - 可通过编辑 JSON 文件启用/禁用各功能及其详细选项。
-- 以“飞行符文”为例：
-  ```json
-  {
-    "features": {
-      "flying_rune": {
-        "enabled": true,
-        "options": {
-          "allowInNether": true,
-          "allowInEnd": true,
-          "preventFallDamage": true,
-          "requireInInventory": true
-        }
-      }
-    }
-  }
-  ```
-- 修改配置后可在游戏内通过重载命令或重启生效。
 
 ## 开发与贡献
 

@@ -1,17 +1,17 @@
 {
-	"schemaVersion": 1,
+	"schemaVersion": 2,
 	"id": "looseprinces-tool",
 	"version": "${version}",
 	"name": "LoosePrince's tool",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
-		"Me!"
+		"LoosePrince"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/LoosePrince/looseprinces-tool",
+		"sources": "https://github.com/LoosePrince/looseprinces-tool"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/looseprinces-tool/icon.png",
 	"environment": "*",
 	"entrypoints": {

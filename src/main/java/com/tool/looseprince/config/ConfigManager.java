@@ -118,20 +118,20 @@ public class ConfigManager {
      * 创建默认配置
      */
     private Config createDefaultConfig() {
-        Config defaultConfig = new Config("1.0.0");
+        Config defaultConfig = new Config("1.0.1");
         
         // 添加飞行符文的默认配置
-        FeatureConfig flyingRuneConfig = new FeatureConfig(true);
-        flyingRuneConfig.setOption("allowInNether", true);
-        flyingRuneConfig.setOption("allowInEnd", true);
-        defaultConfig.setFeatureConfig("flying_rune", flyingRuneConfig);
+        FeatureConfig flyingRuneConfig = new FeatureConfig(true); // 飞行符文默认启用
+        flyingRuneConfig.setOption("allowInNether", true); // 默认允许在下界使用
+        flyingRuneConfig.setOption("allowInEnd", true); // 默认允许在末地使用
+        defaultConfig.setFeatureConfig("flying_rune", flyingRuneConfig); // 设置飞行符文配置
         
         // 添加绑定附魔的默认配置
-        FeatureConfig bindingEnchantmentConfig = new FeatureConfig(true);
-        bindingEnchantmentConfig.setOption("preventDrop", true);
-        bindingEnchantmentConfig.setOption("affectAllItems", true);
-        bindingEnchantmentConfig.setOption("maxLevel", 1);
-        defaultConfig.setFeatureConfig("binding_enchantment", bindingEnchantmentConfig);
+        FeatureConfig bindingEnchantmentConfig = new FeatureConfig(true); // 绑定附魔默认启用
+        bindingEnchantmentConfig.setOption("preventDrop", true); // 默认防止掉落
+        bindingEnchantmentConfig.setOption("affectAllItems", true); // 默认影响所有物品
+        bindingEnchantmentConfig.setOption("maxLevel", 1); // 默认最大等级为1
+        defaultConfig.setFeatureConfig("binding_enchantment", bindingEnchantmentConfig); // 设置绑定附魔配置
         
         return defaultConfig;
     }
@@ -144,7 +144,7 @@ public class ConfigManager {
         
         // 检查版本
         if (config.getVersion() == null) {
-            config.setVersion("1.0.0");
+            config.setVersion("1.0.1");
             needsSave = true;
         }
         

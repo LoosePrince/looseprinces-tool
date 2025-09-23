@@ -18,7 +18,7 @@ public class Config {
     private Map<String, FeatureConfig> features;
     
     public Config() {
-        this.version = "1.0.4";
+        this.version = "1.0.5";
         this.features = new HashMap<>();
     }
     

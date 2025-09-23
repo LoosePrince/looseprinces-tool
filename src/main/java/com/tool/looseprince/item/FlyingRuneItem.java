@@ -25,6 +25,14 @@ public class FlyingRuneItem extends Item {
         // 添加物品描述
         tooltip.add(Text.translatable("item.looseprinces-tool.flying_rune.tooltip.line1")
                 .formatted(Formatting.AQUA));
+        
+        // 添加故事文本
+        tooltip.add(Text.empty());
+        String story = Text.translatable("item.looseprinces-tool.flying_rune.story").getString();
+        String[] lines = story.split("\n");
+        for (String line : lines) {
+            tooltip.add(Text.literal(line).formatted(Formatting.DARK_PURPLE, Formatting.ITALIC));
+        }
     }
     
     @Override

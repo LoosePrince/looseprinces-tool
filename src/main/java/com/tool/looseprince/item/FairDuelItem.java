@@ -21,6 +21,14 @@ public class FairDuelItem extends Item {
         super.appendTooltip(stack, context, tooltip, type);
         tooltip.add(Text.translatable("item.looseprinces-tool.fair_duel.tooltip.line1").formatted(Formatting.AQUA));
         tooltip.add(Text.translatable("item.looseprinces-tool.fair_duel.tooltip.line2").formatted(Formatting.GRAY));
+        
+        // 添加故事文本
+        tooltip.add(Text.empty());
+        String story = Text.translatable("item.looseprinces-tool.fair_duel.story").getString();
+        String[] lines = story.split("\n");
+        for (String line : lines) {
+            tooltip.add(Text.literal(line).formatted(Formatting.DARK_PURPLE, Formatting.ITALIC));
+        }
     }
 }
 

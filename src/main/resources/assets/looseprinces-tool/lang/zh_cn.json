@@ -13,12 +13,16 @@
   "effect.looseprinces-tool.fair_duel.desc": "根据上次对目标造成伤害比例平衡所受伤害",
   "item.looseprinces-tool.imperfect_divinity": "残缺的神格",
   "item.looseprinces-tool.imperfect_divinity.tooltip": "残缺的神力在你体内流动",
-  "item.looseprinces-tool.imperfect_divinity.detail": "背包中持续获得 残缺的神格（抗性提升V + 公平对决）",
+  "item.looseprinces-tool.imperfect_divinity.detail": "放在背包中持续获得 残缺的神格（抗性提升V + 公平对决）",
   "item.looseprinces-tool.complete_divinity": "完整的神格",
   "item.looseprinces-tool.complete_divinity.tooltip": "神的力量庇佑着你",
-  "item.looseprinces-tool.complete_divinity.detail": "背包中持续获得 神的力量（无敌 + 飞行）",
+  "item.looseprinces-tool.complete_divinity.detail": "放在背包中持续获得 神的力量（无敌 + 飞行）",
   "effect.looseprinces-tool.imperfect_divinity": "残缺的神格",
   "effect.looseprinces-tool.imperfect_divinity.desc": "获得抗性提升V并激活公平对决",
   "effect.looseprinces-tool.divine_power": "神的力量",
-  "effect.looseprinces-tool.divine_power.desc": "无敌并禁用公平对决，获得飞行"
+  "effect.looseprinces-tool.divine_power.desc": "无敌并禁用公平对决，获得飞行",
+  "item.looseprinces-tool.flying_rune.story": "仰望高天，那是凡人不敢直视的所在。\n敬畏？不，那并非你的选择。你以凡人之手，构筑了渎神的仪式，从祂们无暇的羽翼上，强行剥离了一缕流光。\n如今，这缕被禁锢的光在你手中的符文中脉动——这是你窃取的自由，是你向高天投去的、第一枚叛逆的徽章。",
+  "item.looseprinces-tool.fair_duel.story": "你曾与那不可触碰的存在对视。祂讥笑你的脆弱，却又以傲慢的仁慈，将一份试炼的契约赐予你。\n自此，强者与弱者不再以力量衡量，而以伤痕为准绳。\n这是对你挑战的赏赐，也是对你自负的惩戒。",
+  "item.looseprinces-tool.imperfect_divinity.story": "窃火者，终将被火焰灼伤。\n你以亵渎之举获取的神性，如同破碎的镜片，在你的灵魂中强行拼合。\n祂赐予你坚不可摧的躯体，却也让你时刻品尝着神性排斥凡俗之身的痛苦。\n这并非恩赐，而是一道枷锁。\n也是你迈向不朽神座的第一步——一条无法回头的荆棘之路。",
+  "item.looseprinces-tool.complete_divinity.story": "痛苦已然平息，神性与你的灵魂完成了最终的融合。\n你治愈了神格的残缺，也意味着你彻底割舍了凡性。\n伤害在你面前失去了意义。天空向你俯首称臣。\n你已与神明等同，你的生命将不再被时光侵蚀，你的力量将不再有尽。\n你实现了不朽。"
 }

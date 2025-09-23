@@ -20,5 +20,9 @@
   "effect.looseprinces-tool.imperfect_divinity": "Imperfect Divinity",
   "effect.looseprinces-tool.imperfect_divinity.desc": "Gain Resistance V and activate Fair Duel",
   "effect.looseprinces-tool.divine_power": "God's Power",
-  "effect.looseprinces-tool.divine_power.desc": "Invincible, disables Fair Duel, and grants flight"
+  "effect.looseprinces-tool.divine_power.desc": "Invincible, disables Fair Duel, and grants flight",
+  "item.looseprinces-tool.flying_rune.story": "Gazing up at the heavens. That sacred realm where mortals dare not look.\nFear? No. That was never your choice. With mortal hands, you crafted a blasphemous ritual, forcibly tearing a streak of light from Their pristine wings.\nNow this imprisoned radiance pulses within your rune—this is your stolen freedom, your first badge of rebellion cast toward the sky.",
+  "item.looseprinces-tool.fair_duel.story": "You once gazed upon that untouchable existence. It mocked your frailty, yet with arrogant mercy, bestowed upon you a covenant of trial.\nHenceforth, the strong and the weak are measured not by might, but by the scars they bear.\nThis is both reward for your challenge, and punishment for your hubris.",
+  "item.looseprinces-tool.imperfect_divinity.story": "The fire-stealer shall be burned by flame. The divinity you seized through blasphemy, like shattered mirror fragments, forcibly reassembles within your soul.\nIt grants you an unbreakable body, yet makes you constantly taste the agony of divine rejection of mortal flesh.\nThis is no blessing, but a shackle.\nIt is your first step toward the immortal throne—a path of thorns, with no return.",
+  "item.looseprinces-tool.complete_divinity.story": "Pain has ceased. Divinity and your soul have completed their final fusion.\nYou have healed the fractured godhead, which means you have utterly severed your mortality.\nHarm loses meaning before you. The sky bows in submission.\nYou have achieved immortality.Your life shall no longer be eroded by time; your power shall know no end. You stand equal with the divine. "
 }

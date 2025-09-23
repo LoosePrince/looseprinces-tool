@@ -18,6 +18,14 @@ public class CompleteDivinityItem extends Item {
         super.appendTooltip(stack, context, tooltip, type);
         tooltip.add(Text.translatable("item.looseprinces-tool.complete_divinity.tooltip").formatted(Formatting.GOLD));
         tooltip.add(Text.translatable("item.looseprinces-tool.complete_divinity.detail").formatted(Formatting.GRAY));
+        
+        // 添加故事文本
+        tooltip.add(Text.empty());
+        String story = Text.translatable("item.looseprinces-tool.complete_divinity.story").getString();
+        String[] lines = story.split("\n");
+        for (String line : lines) {
+            tooltip.add(Text.literal(line).formatted(Formatting.DARK_PURPLE, Formatting.ITALIC));
+        }
     }
 
     @Override

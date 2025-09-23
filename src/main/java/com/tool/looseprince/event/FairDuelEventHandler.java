@@ -147,6 +147,12 @@ public class FairDuelEventHandler {
     }
 
     private boolean hasFairDuel(PlayerEntity player) {
+        // 首先检查是否有公平对决状态效果（残缺神格或其他来源）
+        if (feature.getFairDuelEffect() != null && player.hasStatusEffect(feature.getFairDuelEffect())) {
+            return true;
+        }
+
+        // 其次检查是否持有公平对决物品
         // 主背包
         for (int i = 0; i < player.getInventory().size(); i++) {
             ItemStack stack = player.getInventory().getStack(i);

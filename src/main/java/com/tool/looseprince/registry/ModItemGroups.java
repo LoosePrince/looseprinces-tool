@@ -3,6 +3,7 @@ package com.tool.looseprince.registry;
 import com.tool.looseprince.LoosePrincesTool;
 import com.tool.looseprince.feature.FlyingRuneFeature;
 import com.tool.looseprince.feature.FairDuelFeature;
+import com.tool.looseprince.feature.DivinityFeature;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -34,6 +35,8 @@ public class ModItemGroups {
                         .entries((context, entries) -> {
                             entries.add(FlyingRuneFeature.getStaticFlyingRune());
                             entries.add(FairDuelFeature.getStaticItem());
+                            entries.add(DivinityFeature.getStaticImperfectDivinityItem());
+                            entries.add(DivinityFeature.getStaticCompleteDivinityItem());
                             
                             // 添加绑定附魔书
                             try {

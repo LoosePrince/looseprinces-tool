@@ -2,12 +2,13 @@ package com.tool.looseprince.event;
 
 import com.tool.looseprince.LoosePrincesTool;
 import com.tool.looseprince.feature.FlyingRuneFeature;
+import com.tool.looseprince.feature.DivinityFeature;
+import com.tool.looseprince.feature.FeatureRegistry;
 import com.tool.looseprince.item.FlyingRuneItem;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
 
 /**
  * 飞行符文事件处理器
@@ -66,8 +67,17 @@ public class FlyingRuneEventHandler {
             // 检查背包中是否有飞行符文
             boolean hasFlyingRune = hasRuneInInventory(player);
             
-            // 更新飞行能力
-            boolean shouldAllowFlying = hasFlyingRune;
+            // 检查是否有完整神格的神力效果
+            boolean hasDivinePower = false;
+            try {
+                DivinityFeature divFeature = (DivinityFeature) FeatureRegistry.getInstance().getFeature("divinity");
+                if (divFeature != null && divFeature.getDivinePowerEffect() != null) {
+                    hasDivinePower = player.hasStatusEffect(divFeature.getDivinePowerEffect());
+                }
+            } catch (Exception ignored) {}
+            
+            // 更新飞行能力：有飞行符文或有神力效果都可以飞行
+            boolean shouldAllowFlying = hasFlyingRune || hasDivinePower;
             
             if (player.getAbilities().allowFlying != shouldAllowFlying) {
                 player.getAbilities().allowFlying = shouldAllowFlying;

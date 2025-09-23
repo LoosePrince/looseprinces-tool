@@ -12,5 +12,15 @@
   "item.looseprinces-tool.fair_duel.tooltip.line1": "根据持有者对其它生物的造成的伤害之于生物生命上限的百分比调整玩家受到的伤害（无视减伤和附加）为相同百分比。",
   "item.looseprinces-tool.fair_duel.tooltip.line2": "放在背包中以启用",
   "effect.looseprinces-tool.fair_duel": "公平对决",
-  "effect.looseprinces-tool.fair_duel.desc": "根据上次对目标造成伤害比例平衡所受伤害"
+  "effect.looseprinces-tool.fair_duel.desc": "根据上次对目标造成伤害比例平衡所受伤害",
+  "item.looseprinces-tool.imperfect_divinity": "残缺的神格",
+  "item.looseprinces-tool.imperfect_divinity.tooltip": "残缺的神力在你体内流动",
+  "item.looseprinces-tool.imperfect_divinity.detail": "背包中持续获得 残缺的神格（抗性提升V + 公平对决）",
+  "item.looseprinces-tool.complete_divinity": "完整的神格",
+  "item.looseprinces-tool.complete_divinity.tooltip": "神的力量庇佑着你",
+  "item.looseprinces-tool.complete_divinity.detail": "背包中持续获得 神的力量（无敌 + 飞行）",
+  "effect.looseprinces-tool.imperfect_divinity": "残缺的神格",
+  "effect.looseprinces-tool.imperfect_divinity.desc": "获得抗性提升V并激活公平对决",
+  "effect.looseprinces-tool.divine_power": "神的力量",
+  "effect.looseprinces-tool.divine_power.desc": "无敌并禁用公平对决，获得飞行"
 }

@@ -12,5 +12,15 @@
   "item.looseprinces-tool.fair_duel.tooltip.line1": "Adjust the player's damage received by the percentage of the damage caused by the holder to other living beings (ignoring damage reduction and additional effects) to the same percentage.",
   "item.looseprinces-tool.fair_duel.tooltip.line2": "Keep in inventory to enable",
   "effect.looseprinces-tool.fair_duel": "Fair Duel",
-  "effect.looseprinces-tool.fair_duel.desc": "Scale incoming damage by last dealt percent"
+  "effect.looseprinces-tool.fair_duel.desc": "Scale incoming damage by last dealt percent",
+  "item.looseprinces-tool.imperfect_divinity": "Imperfect Divinity",
+  "item.looseprinces-tool.imperfect_divinity.tooltip": "A fragment of divine power flows within you",
+  "item.looseprinces-tool.imperfect_divinity.detail": "Grants Imperfect Divinity (Resistance V + Fair Duel) while in inventory",
+  "item.looseprinces-tool.complete_divinity": "Complete Divinity",
+  "item.looseprinces-tool.complete_divinity.tooltip": "You are blessed by the God's Power",
+  "item.looseprinces-tool.complete_divinity.detail": "Grants God's Power (Invincible + Flight) while in inventory",
+  "effect.looseprinces-tool.imperfect_divinity": "Imperfect Divinity",
+  "effect.looseprinces-tool.imperfect_divinity.desc": "Gain Resistance V and activate Fair Duel",
+  "effect.looseprinces-tool.divine_power": "God's Power",
+  "effect.looseprinces-tool.divine_power.desc": "Invincible, disables Fair Duel, and grants flight"
 }

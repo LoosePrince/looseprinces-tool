@@ -2,6 +2,7 @@ package com.tool.looseprince.mixin;
 
 import com.tool.looseprince.LoosePrincesTool;
 import com.tool.looseprince.feature.FairDuelFeature;
+import com.tool.looseprince.feature.DivinityFeature;
 import com.tool.looseprince.feature.FeatureRegistry;
 import com.tool.looseprince.event.FairDuelEventHandler;
 import net.minecraft.entity.Entity;
@@ -27,11 +28,21 @@ public abstract class LivingEntityFairDuelMixin {
     private float lp_fairduel_preHealth;
     private DamageSource lp_fairduel_lastSource;
 
-    @Inject(method = "damage", at = @At("HEAD"))
+    @Inject(method = "damage", at = @At("HEAD"), cancellable = true)
     private void lp_fairduel_capturePreHealth(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         LivingEntity self = (LivingEntity) (Object) this;
         lp_fairduel_preHealth = self.getHealth();
         lp_fairduel_lastSource = source;
+
+        // 优先检查神力无敌：完全阻止伤害
+        if (self instanceof PlayerEntity playerVictim) {
+            DivinityFeature div = (DivinityFeature) FeatureRegistry.getInstance().getFeature("divinity");
+            if (div != null && div.getDivinePowerEffect() != null && playerVictim.hasStatusEffect(div.getDivinePowerEffect())) {
+                LoosePrincesTool.LOGGER.info("[Divinity] Divine power active, cancel damage for {}", playerVictim.getName().getString());
+                cir.setReturnValue(false); // 完全阻止伤害处理
+                return;
+            }
+        }
     }
 
     @Inject(method = "damage", at = @At("TAIL"))
@@ -61,11 +72,14 @@ public abstract class LivingEntityFairDuelMixin {
             }
         }
 
-        // 2) 如果是玩家受到伤害，直接设置生命值（绕过所有减伤）
+        // 2) 如果是玩家受到伤害，处理公平对决逻辑
         if (self instanceof PlayerEntity playerVictim) {
+            // 神力效果已在HEAD中处理，这里不再检查
+
+            // 检查是否应用公平对决调整
             float adjustedDamage = handler.modifyIncomingDamage(playerVictim, attacker, amount);
             
-            // 如果调整后的伤害与原伤害不同，直接设置生命值
+            // 如果调整后的伤害与原伤害不同，直接设置生命值（绕过抗性提升等减伤）
             if (adjustedDamage != amount) {
                 float newHealth = Math.max(0.0f, lp_fairduel_preHealth - adjustedDamage);
                 setHealth(newHealth);
@@ -75,6 +89,7 @@ public abstract class LivingEntityFairDuelMixin {
                         attacker != null ? attacker.getName().getString() : "null",
                         amount, adjustedDamage, newHealth);
             }
+            // 如果没有公平对决调整，让原版逻辑（包括抗性提升）正常处理
         }
     }
 }

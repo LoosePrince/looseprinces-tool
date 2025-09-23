@@ -13,7 +13,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
-import net.minecraft.registry.Registries;
 
 import java.util.UUID;
 
@@ -65,11 +64,28 @@ public final class SoulBindingUtils {
         if (stack == null || stack.isEmpty() || player == null) return;
         if (!hasSoulBinding(stack)) return;
         NbtCompound nbt = getCustomData(stack);
+
+        // 如果尚未记录拥有者，则写入 UUID 与当前名称
         if (!nbt.containsUuid(NBT_OWNER_UUID)) {
             nbt.putUuid(NBT_OWNER_UUID, player.getUuid());
-            nbt.putString(NBT_OWNER_NAME, player.getName().getString());
+            String currentName = player.getGameProfile() != null ? player.getGameProfile().getName() : player.getName().getString();
+            nbt.putString(NBT_OWNER_NAME, currentName);
             setCustomData(stack, nbt);
+            return;
         }
+
+        // 若已记录且 UUID 与当前玩家一致，则刷新名称（玩家改名后可更新显示）
+        try {
+            UUID owner = nbt.getUuid(NBT_OWNER_UUID);
+            if (owner.equals(player.getUuid())) {
+                String stored = nbt.contains(NBT_OWNER_NAME) ? nbt.getString(NBT_OWNER_NAME) : null;
+                String currentName = player.getGameProfile() != null ? player.getGameProfile().getName() : player.getName().getString();
+                if (stored == null || !stored.equals(currentName)) {
+                    nbt.putString(NBT_OWNER_NAME, currentName);
+                    setCustomData(stack, nbt);
+                }
+            }
+        } catch (Exception ignored) {}
     }
 
     /**

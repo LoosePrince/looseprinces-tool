@@ -118,7 +118,7 @@ public class ConfigManager {
      * 创建默认配置
      */
     private Config createDefaultConfig() {
-        Config defaultConfig = new Config("1.0.1");
+        Config defaultConfig = new Config("1.0.2");
         
         // 添加飞行符文的默认配置
         FeatureConfig flyingRuneConfig = new FeatureConfig(true); // 飞行符文默认启用
@@ -151,7 +151,7 @@ public class ConfigManager {
         
         // 检查版本
         if (config.getVersion() == null) {
-            config.setVersion("1.0.1");
+            config.setVersion("1.0.2");
             needsSave = true;
         }
         

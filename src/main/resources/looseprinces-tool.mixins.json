@@ -5,7 +5,10 @@
 	"mixins": [
 		"ExampleMixin",
 		"PlayerEntityMixin",
-		"LivingEntityFairDuelMixin"
+		"LivingEntityFairDuelMixin",
+		"ItemEntitySoulBindingMixin",
+		"PlayerInventorySoulBindingMixin",
+		"SlotSoulBindingMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

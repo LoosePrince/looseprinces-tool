@@ -54,11 +54,11 @@ public class FairDuelFeature implements Feature {
     @Override
     public void initialize() {
         if (!isEnabled()) {
-            LoosePrincesTool.LOGGER.info("公平对决功能已禁用，跳过初始化");
+            LoosePrincesTool.LOGGER.debug("公平对决功能已禁用，跳过初始化");
             return;
         }
 
-        LoosePrincesTool.LOGGER.info("初始化公平对决功能");
+        LoosePrincesTool.LOGGER.debug("初始化公平对决功能");
 
         registerItem();
 
@@ -69,7 +69,7 @@ public class FairDuelFeature implements Feature {
         // 注册状态效果
         registerStatusEffect();
 
-        LoosePrincesTool.LOGGER.info("公平对决功能初始化完成");
+        LoosePrincesTool.LOGGER.debug("公平对决功能初始化完成");
     }
 
     @Override
@@ -113,7 +113,7 @@ public class FairDuelFeature implements Feature {
                     fairDuelItem
             );
 
-            LoosePrincesTool.LOGGER.info("公平对决物品注册成功");
+            LoosePrincesTool.LOGGER.debug("公平对决物品注册成功");
         } catch (Exception e) {
             LoosePrincesTool.LOGGER.error("注册公平对决物品失败", e);
         }
@@ -136,7 +136,7 @@ public class FairDuelFeature implements Feature {
             StatusEffect effect = new StatusEffect(StatusEffectCategory.BENEFICIAL, 0xF6C453) {};
             StatusEffect registered = Registry.register(Registries.STATUS_EFFECT, Identifier.of(LoosePrincesTool.MOD_ID, "fair_duel"), effect);
             this.fairDuelEffect = Registries.STATUS_EFFECT.getEntry(registered);
-            LoosePrincesTool.LOGGER.info("公平对决状态效果注册成功");
+            LoosePrincesTool.LOGGER.debug("公平对决状态效果注册成功");
         } catch (Exception e) {
             LoosePrincesTool.LOGGER.error("注册公平对决状态效果失败", e);
         }

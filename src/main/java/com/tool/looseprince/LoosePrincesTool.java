@@ -9,6 +9,7 @@ import com.tool.looseprince.config.ConfigManager;
 import com.tool.looseprince.feature.FeatureRegistry;
 import com.tool.looseprince.feature.FlyingRuneFeature;
 import com.tool.looseprince.feature.BindingEnchantmentFeature;
+import com.tool.looseprince.feature.SoulBindingFeature;
 import com.tool.looseprince.feature.FairDuelFeature;
 import com.tool.looseprince.registry.ModItemGroups;
 
@@ -66,6 +67,9 @@ public class LoosePrincesTool implements ModInitializer {
 		
 		// 注册绑定附魔功能
 		registry.registerFeature(new BindingEnchantmentFeature());
+		
+		// 注册灵魂绑定附魔功能
+		registry.registerFeature(new SoulBindingFeature());
 
 		// 注册公平对决功能
 		registry.registerFeature(new FairDuelFeature());

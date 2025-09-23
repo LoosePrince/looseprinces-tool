@@ -140,6 +140,13 @@ public class ConfigManager {
         fairDuelConfig.setOption("damageRatio", 1.0); // 默认100%转换比例
         defaultConfig.setFeatureConfig("fair_duel", fairDuelConfig);
         
+        // 灵魂绑定附魔默认配置
+        FeatureConfig soulBindingConfig = new FeatureConfig(true);
+        soulBindingConfig.setOption("preventPickup", true);
+        soulBindingConfig.setOption("preventContainerTake", true);
+        soulBindingConfig.setOption("showOwnerTooltip", true);
+        defaultConfig.setFeatureConfig("soul_binding", soulBindingConfig);
+        
         return defaultConfig;
     }
     
@@ -173,6 +180,16 @@ public class ConfigManager {
             bindingEnchantmentConfig.setOption("affectAllItems", true);
             bindingEnchantmentConfig.setOption("maxLevel", 1);
             config.setFeatureConfig("binding_enchantment", bindingEnchantmentConfig);
+            needsSave = true;
+        }
+        
+        // 确保灵魂绑定附魔配置存在
+        if (config.getFeatureConfig("soul_binding") == null) {
+            FeatureConfig soulBindingConfig = new FeatureConfig(true);
+            soulBindingConfig.setOption("preventPickup", true);
+            soulBindingConfig.setOption("preventContainerTake", true);
+            soulBindingConfig.setOption("showOwnerTooltip", true);
+            config.setFeatureConfig("soul_binding", soulBindingConfig);
             needsSave = true;
         }
         

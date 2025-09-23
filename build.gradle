@@ -30,6 +30,14 @@ loom {
 
 }
 
+sourceSets {
+	main {
+		resources {
+			srcDir "src/main/generated"
+		}
+	}
+}
+
 fabricApi {
 	configureDataGeneration {
 		client = true
@@ -69,6 +77,16 @@ java {
 
 	sourceCompatibility = JavaVersion.VERSION_21
 	targetCompatibility = JavaVersion.VERSION_21
+}
+
+// Ensure generated data is available before packaging sources/resources
+tasks.named("sourcesJar") {
+	dependsOn tasks.named("runDatagen")
+}
+
+// Avoid circular dependency: classes -> processResources -> runDatagen -> classes
+tasks.named("build") {
+	dependsOn tasks.named("runDatagen")
 }
 
 jar {

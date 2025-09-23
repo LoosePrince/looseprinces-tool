@@ -1,0 +1,28 @@
+{
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "translate": "advancements.looseprinces-tool.root.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "looseprinces-tool:mod_icon"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancements.looseprinces-tool.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

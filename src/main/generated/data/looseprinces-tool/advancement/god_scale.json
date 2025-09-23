@@ -1,0 +1,26 @@
+{
+  "parent": "looseprinces-tool:root",
+  "criteria": {
+    "granted_by_code": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.looseprinces-tool.god_scale.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "looseprinces-tool:fair_duel"
+    },
+    "title": {
+      "translate": "advancements.looseprinces-tool.god_scale.title"
+    }
+  },
+  "requirements": [
+    [
+      "granted_by_code"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

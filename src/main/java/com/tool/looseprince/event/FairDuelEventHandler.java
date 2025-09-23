@@ -2,12 +2,17 @@ package com.tool.looseprince.event;
 
 import com.tool.looseprince.LoosePrincesTool;
 import com.tool.looseprince.feature.FairDuelFeature;
+import com.tool.looseprince.feature.DivinityFeature;
+import com.tool.looseprince.feature.FeatureRegistry;
 import com.tool.looseprince.item.FairDuelItem;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.advancement.AdvancementEntry;
+import net.minecraft.util.Identifier;
 import net.minecraft.item.ItemStack;
 
 import java.util.HashMap;
@@ -67,7 +72,7 @@ public class FairDuelEventHandler {
             }
         });
 
-        // 每0.5秒给持有物品的玩家赋予1秒公平对决效果
+        // 每0.5秒给满足来源(物品或残缺神格效果)的玩家赋予1.5秒公平对决效果
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             long time = server.getOverworld().getTime();
             if ((time % 10) != 0) { // 20t/s → 每10tick=0.5s
@@ -79,6 +84,11 @@ public class FairDuelEventHandler {
                         // 1.5s(30t) 时长，0.5s 赋予一次，容错抖动
                         player.addStatusEffect(new StatusEffectInstance(feature.getFairDuelEffect(), 30, 0, true, true, true));
                         lastEffectAppliedTick.put(player.getUuid(), (int) time);
+                        if (player instanceof ServerPlayerEntity sp) {
+                            if (com.tool.looseprince.LoosePrincesTool.isOurAdvancementsLoaded()) {
+                                grantAdvancementCriterion(sp, "god_scale", "granted_by_code");
+                            }
+                        }
                     }
                 }
             } catch (Exception ignored) {}
@@ -147,12 +157,15 @@ public class FairDuelEventHandler {
     }
 
     private boolean hasFairDuel(PlayerEntity player) {
-        // 首先检查是否有公平对决状态效果（残缺神格或其他来源）
-        if (feature.getFairDuelEffect() != null && player.hasStatusEffect(feature.getFairDuelEffect())) {
-            return true;
-        }
+        // 来源1：残缺的神格状态效果（由神格物品授予），允许刷新公平对决
+        try {
+            DivinityFeature div = (DivinityFeature) FeatureRegistry.getInstance().getFeature("divinity");
+            if (div != null && div.getImperfectDivinityEffect() != null && player.hasStatusEffect(div.getImperfectDivinityEffect())) {
+                return true;
+            }
+        } catch (Exception ignored) {}
 
-        // 其次检查是否持有公平对决物品
+        // 来源2：持有公平对决物品
         // 主背包
         for (int i = 0; i < player.getInventory().size(); i++) {
             ItemStack stack = player.getInventory().getStack(i);
@@ -173,6 +186,21 @@ public class FairDuelEventHandler {
             }
         }
         return false;
+    }
+
+    private void grantAdvancementCriterion(ServerPlayerEntity player, String path, String criterion) {
+        try {
+            Identifier id = Identifier.of(LoosePrincesTool.MOD_ID, path);
+            AdvancementEntry adv = player.getServer().getAdvancementLoader().get(id);
+            if (adv != null) {
+                boolean granted = player.getAdvancementTracker().grantCriterion(adv, criterion);
+                LoosePrincesTool.LOGGER.info("[Adv] grant {}:{} -> {} => {}", id.getNamespace(), id.getPath(), criterion, granted);
+            } else {
+                LoosePrincesTool.LOGGER.warn("[Adv] missing advancement {}", id);
+            }
+        } catch (Exception e) {
+            LoosePrincesTool.LOGGER.error("[Adv] grant error", e);
+        }
     }
 }
 

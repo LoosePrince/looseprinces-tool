@@ -12,6 +12,8 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.advancement.AdvancementEntry;
+import net.minecraft.util.Identifier;
 
 /**
  * 神格事件处理：
@@ -43,6 +45,10 @@ public class DivinityEventHandler {
                     if (hasComplete && feature.getDivinePowerEffect() != null) {
                         // 神的力量（无敌），并清理公平对决效果
                         player.addStatusEffect(new StatusEffectInstance(feature.getDivinePowerEffect(), 30, 0, true, true, true));
+                        // 进度：王座承认了你
+                        if (com.tool.looseprince.LoosePrincesTool.isOurAdvancementsLoaded()) {
+                            grantAdvancementCriterion(player, "throne", "granted_by_code");
+                        }
                         if (fair != null && fair.getFairDuelEffect() != null && player.hasStatusEffect(fair.getFairDuelEffect())) {
                             player.removeStatusEffect(fair.getFairDuelEffect());
                         }
@@ -57,6 +63,10 @@ public class DivinityEventHandler {
                         // 残缺的神格：仅赋予自定义状态效果，该效果内部包含抗性提升V和公平对决功能
                         if (feature.getImperfectDivinityEffect() != null) {
                             player.addStatusEffect(new StatusEffectInstance(feature.getImperfectDivinityEffect(), 30, 0, true, true, true));
+                            // 进度：窃火者的荆棘冠
+                            if (com.tool.looseprince.LoosePrincesTool.isOurAdvancementsLoaded()) {
+                                grantAdvancementCriterion(player, "thorn_crown", "granted_by_code");
+                            }
                         }
                         // 不覆盖飞行状态（交由飞行符文或其他来源控制）
                     } else {
@@ -91,6 +101,21 @@ public class DivinityEventHandler {
                 LoosePrincesTool.LOGGER.error("DivinityEventHandler secondary tick error", e);
             }
         });
+    }
+
+    private void grantAdvancementCriterion(ServerPlayerEntity player, String path, String criterion) {
+        try {
+            Identifier id = Identifier.of(LoosePrincesTool.MOD_ID, path);
+            AdvancementEntry adv = player.getServer().getAdvancementLoader().get(id);
+            if (adv != null) {
+                boolean granted = player.getAdvancementTracker().grantCriterion(adv, criterion);
+                LoosePrincesTool.LOGGER.info("[Adv] grant {}:{} -> {} => {}", id.getNamespace(), id.getPath(), criterion, granted);
+            } else {
+                LoosePrincesTool.LOGGER.warn("[Adv] missing advancement {}", id);
+            }
+        } catch (Exception e) {
+            LoosePrincesTool.LOGGER.error("[Adv] grant error", e);
+        }
     }
 
     private boolean hasImperfect(PlayerEntity player) {

@@ -1,0 +1,27 @@
+{
+  "parent": "looseprinces-tool:root",
+  "criteria": {
+    "granted_by_code": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.looseprinces-tool.throne.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "looseprinces-tool:complete_divinity"
+    },
+    "title": {
+      "translate": "advancements.looseprinces-tool.throne.title"
+    }
+  },
+  "requirements": [
+    [
+      "granted_by_code"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

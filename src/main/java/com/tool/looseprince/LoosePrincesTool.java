@@ -13,6 +13,12 @@ import com.tool.looseprince.feature.SoulBindingFeature;
 import com.tool.looseprince.feature.FairDuelFeature;
 import com.tool.looseprince.feature.DivinityFeature;
 import com.tool.looseprince.registry.ModItemGroups;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.advancement.AdvancementEntry;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Identifier;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * LoosePrince's Tool 模组主类
@@ -24,6 +30,9 @@ public class LoosePrincesTool implements ModInitializer {
 	// 日志记录器，用于向控制台和日志文件写入文本
 	// 使用模组ID作为日志记录器的名称是最佳实践
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+	// 缓存已加载的本模组进度ID（path），用于事件授予前校验
+	private static List<String> LOADED_ADVANCEMENT_IDS = new ArrayList<>();
 
 	@Override
 	public void onInitialize() {
@@ -46,6 +55,37 @@ public class LoosePrincesTool implements ModInitializer {
 		initializeFeatures();
 
 		LOGGER.info("LoosePrince's Tool 模组初始化完成");
+
+		// 在服务器启动后，确认我们的成就入口(root)已注册，避免“missing advancement”
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> ensureAdvancementsLoaded(server));
+	}
+
+	private void ensureAdvancementsLoaded(MinecraftServer server) {
+		try {
+			Identifier root = Identifier.of(MOD_ID, "root");
+			AdvancementEntry entry = server.getAdvancementLoader().get(root);
+			if (entry == null) {
+				LOGGER.warn("[Adv] root advancement not found at server start: {}", root);
+			} else {
+				LOGGER.info("[Adv] root advancement loaded: {}", root);
+			}
+			// 枚举本模组命名空间下的所有进度，便于排查
+			List<String> ours = new ArrayList<>();
+			for (AdvancementEntry e : server.getAdvancementLoader().getAdvancements()) {
+				Identifier id = e.id();
+				if (MOD_ID.equals(id.getNamespace())) {
+					ours.add(id.getPath());
+				}
+			}
+			LOGGER.info("[Adv] loaded entries in {}: {}", MOD_ID, ours);
+			LOADED_ADVANCEMENT_IDS = ours;
+		} catch (Exception e) {
+			LOGGER.error("[Adv] ensureAdvancementsLoaded error", e);
+		}
+	}
+
+	public static boolean isOurAdvancementsLoaded() {
+		return LOADED_ADVANCEMENT_IDS != null && !LOADED_ADVANCEMENT_IDS.isEmpty();
 	}
 
 	/**

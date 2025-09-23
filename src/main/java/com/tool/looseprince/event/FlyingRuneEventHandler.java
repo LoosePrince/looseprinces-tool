@@ -9,6 +9,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.advancement.AdvancementEntry;
+import net.minecraft.util.Identifier;
 
 /**
  * 飞行符文事件处理器
@@ -95,6 +97,10 @@ public class FlyingRuneEventHandler {
                 
                 // 同步能力到客户端
                 player.sendAbilitiesUpdate();
+                // 成就：亵渎者的羽翼（持有符文或生存飞行即可）
+                if (shouldAllowFlying && com.tool.looseprince.LoosePrincesTool.isOurAdvancementsLoaded()) {
+                    grantAdvancementCriterion(player, "wings", "granted_by_code");
+                }
             }
             
         } catch (Exception e) {
@@ -130,5 +136,20 @@ public class FlyingRuneEventHandler {
      */
     private boolean isFlyingRune(ItemStack stack) {
         return !stack.isEmpty() && stack.getItem() == feature.getFlyingRune();
+    }
+
+    private void grantAdvancementCriterion(ServerPlayerEntity player, String path, String criterion) {
+        try {
+            Identifier id = Identifier.of(LoosePrincesTool.MOD_ID, path);
+            AdvancementEntry adv = player.getServer().getAdvancementLoader().get(id);
+            if (adv != null) {
+                boolean granted = player.getAdvancementTracker().grantCriterion(adv, criterion);
+                LoosePrincesTool.LOGGER.info("[Adv] grant {}:{} -> {} => {}", id.getNamespace(), id.getPath(), criterion, granted);
+            } else {
+                LoosePrincesTool.LOGGER.warn("[Adv] missing advancement {}", id);
+            }
+        } catch (Exception e) {
+            LoosePrincesTool.LOGGER.error("[Adv] grant error", e);
+        }
     }
 }

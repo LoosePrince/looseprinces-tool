@@ -1,9 +1,9 @@
 {
-	"schemaVersion": 2,
+	"schemaVersion": 1,
 	"id": "looseprinces-tool",
 	"version": "${version}",
 	"name": "LoosePrince's tool",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "LoosePrince的工具箱",
 	"authors": [
 		"LoosePrince"
 	],

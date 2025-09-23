@@ -5,5 +5,10 @@
   "item.looseprinces-tool.flying_rune.tooltip.usage": "放在背包中以启用飞行能力",
   "item.looseprinces-tool.mod_icon": "LoosePrince的工具箱",
   "itemGroup.looseprinces-tool.main": "LoosePrince的工具箱",
-  "enchantment.looseprinces-tool.binding": "绑定"
+  "enchantment.looseprinces-tool.binding": "绑定",
+  "item.looseprinces-tool.fair_duel": "公平对决",
+  "item.looseprinces-tool.fair_duel.tooltip.line1": "根据持有者对其它生物的造成的伤害之于生物生命上限的百分比调整玩家受到的伤害（无视减伤和附加）为相同百分比。",
+  "item.looseprinces-tool.fair_duel.tooltip.line2": "放在背包中以启用",
+  "effect.looseprinces-tool.fair_duel": "公平对决",
+  "effect.looseprinces-tool.fair_duel.desc": "根据上次对目标造成伤害比例平衡所受伤害"
 }

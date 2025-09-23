@@ -3,6 +3,7 @@ package com.tool.looseprince.registry;
 import com.tool.looseprince.LoosePrincesTool;
 import com.tool.looseprince.feature.FlyingRuneFeature;
 import com.tool.looseprince.feature.BindingEnchantmentFeature;
+import com.tool.looseprince.feature.FairDuelFeature;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
@@ -37,6 +38,7 @@ public class ModItemGroups {
                         .displayName(Text.translatable("itemGroup.looseprinces-tool.main"))
                         .entries((context, entries) -> {
                             entries.add(FlyingRuneFeature.getStaticFlyingRune());
+                            entries.add(FairDuelFeature.getStaticItem());
                         })
                         .build()
         );

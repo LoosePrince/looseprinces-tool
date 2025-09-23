@@ -124,6 +124,8 @@ public class ConfigManager {
         FeatureConfig flyingRuneConfig = new FeatureConfig(true); // 飞行符文默认启用
         flyingRuneConfig.setOption("allowInNether", true); // 默认允许在下界使用
         flyingRuneConfig.setOption("allowInEnd", true); // 默认允许在末地使用
+        flyingRuneConfig.setOption("preventFallDamage", true); // 默认防止摔落伤害
+        flyingRuneConfig.setOption("requireInInventory", true); // 默认需要在背包中
         defaultConfig.setFeatureConfig("flying_rune", flyingRuneConfig); // 设置飞行符文配置
         
         // 添加绑定附魔的默认配置
@@ -132,6 +134,11 @@ public class ConfigManager {
         bindingEnchantmentConfig.setOption("affectAllItems", true); // 默认影响所有物品
         bindingEnchantmentConfig.setOption("maxLevel", 1); // 默认最大等级为1
         defaultConfig.setFeatureConfig("binding_enchantment", bindingEnchantmentConfig); // 设置绑定附魔配置
+        
+        // 公平对决默认配置
+        FeatureConfig fairDuelConfig = new FeatureConfig(true);
+        fairDuelConfig.setOption("damageRatio", 1.0); // 默认100%转换比例
+        defaultConfig.setFeatureConfig("fair_duel", fairDuelConfig);
         
         return defaultConfig;
     }
@@ -153,6 +160,8 @@ public class ConfigManager {
             FeatureConfig flyingRuneConfig = new FeatureConfig(true);
             flyingRuneConfig.setOption("allowInNether", true);
             flyingRuneConfig.setOption("allowInEnd", true);
+            flyingRuneConfig.setOption("preventFallDamage", true);
+            flyingRuneConfig.setOption("requireInInventory", true);
             config.setFeatureConfig("flying_rune", flyingRuneConfig);
             needsSave = true;
         }

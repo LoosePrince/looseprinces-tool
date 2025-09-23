@@ -5,5 +5,10 @@
   "item.looseprinces-tool.flying_rune.tooltip.usage": "Hold in inventory to enable flight",
   "item.looseprinces-tool.mod_icon": "LoosePrince's Tool",
   "itemGroup.looseprinces-tool.main": "LoosePrince's Tool",
-  "enchantment.looseprinces-tool.binding": "Binding"
+  "enchantment.looseprinces-tool.binding": "Binding",
+  "item.looseprinces-tool.fair_duel": "Fair Duel",
+  "item.looseprinces-tool.fair_duel.tooltip.line1": "Adjust the player's damage received by the percentage of the damage caused by the holder to other living beings (ignoring damage reduction and additional effects) to the same percentage.",
+  "item.looseprinces-tool.fair_duel.tooltip.line2": "Keep in inventory to enable",
+  "effect.looseprinces-tool.fair_duel": "Fair Duel",
+  "effect.looseprinces-tool.fair_duel.desc": "Scale incoming damage by last dealt percent"
 }

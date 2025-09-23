@@ -62,8 +62,9 @@ jobs:
       - name: capture build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Artifacts
+          name: build-artifacts
           path: build/libs/
+          retention-days: 1  # 只在需要时保留，节省存储空间
 
   release:
     needs: build
@@ -75,17 +76,11 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v4
       
-      - name: setup jdk
-        uses: actions/setup-java@v4
+      - name: download build artifacts
+        uses: actions/download-artifact@v4
         with:
-          java-version: '21'
-          distribution: 'microsoft'
-      
-      - name: make gradle wrapper executable
-        run: chmod +x ./gradlew
-      
-      - name: build for release
-        run: ./gradlew build
+          name: build-artifacts
+          path: build/libs/
       
       - name: create release
         uses: softprops/action-gh-release@v2
@@ -100,7 +95,7 @@ jobs:
             
             ## 下载
             
-            请下载适合你游戏版本的模组文件。
+            请下载不含 sources 的模组文件。
           files: |
             build/libs/*.jar
           draft: false

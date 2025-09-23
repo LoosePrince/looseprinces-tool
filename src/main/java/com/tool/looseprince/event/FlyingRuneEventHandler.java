@@ -66,20 +66,30 @@ public class FlyingRuneEventHandler {
                 return;
             }
             
+            // 冷却期间禁止飞行
+            long nowTick = player.getServerWorld().getTime();
+            boolean creatorCooling = false;
+            try {
+                creatorCooling = com.tool.looseprince.util.CreatorCooldownManager.getInstance()
+                        .isCoolingDown(player.getUuid(), nowTick);
+            } catch (Exception ignored) {}
+
             // 检查背包中是否有飞行符文
             boolean hasFlyingRune = hasRuneInInventory(player);
             
-            // 检查是否有完整神格的神力效果
-            boolean hasDivinePower = false;
+            // 检查是否有完整神格的神力效果 或 造物主效果
+            boolean hasGodLikePower = false;
             try {
                 DivinityFeature divFeature = (DivinityFeature) FeatureRegistry.getInstance().getFeature("divinity");
-                if (divFeature != null && divFeature.getDivinePowerEffect() != null) {
-                    hasDivinePower = player.hasStatusEffect(divFeature.getDivinePowerEffect());
+                if (divFeature != null) {
+                    boolean god = divFeature.getDivinePowerEffect() != null && player.hasStatusEffect(divFeature.getDivinePowerEffect());
+                    boolean creator = divFeature.getCreatorEffect() != null && player.hasStatusEffect(divFeature.getCreatorEffect());
+                    hasGodLikePower = god || creator;
                 }
             } catch (Exception ignored) {}
             
-            // 更新飞行能力：有飞行符文或有神力效果都可以飞行
-            boolean shouldAllowFlying = hasFlyingRune || hasDivinePower;
+            // 更新飞行能力：有飞行符文或有神力/造物主效果都可以飞行（冷却期禁飞）
+            boolean shouldAllowFlying = (hasFlyingRune || hasGodLikePower) && !creatorCooling;
             
             if (player.getAbilities().allowFlying != shouldAllowFlying) {
                 player.getAbilities().allowFlying = shouldAllowFlying;

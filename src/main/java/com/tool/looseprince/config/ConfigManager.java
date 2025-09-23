@@ -147,6 +147,12 @@ public class ConfigManager {
         soulBindingConfig.setOption("showOwnerTooltip", true);
         defaultConfig.setFeatureConfig("soul_binding", soulBindingConfig);
         
+        // 神格系统默认配置（含造物主冷却与数量）
+        FeatureConfig divinityConfig = new FeatureConfig(true);
+        divinityConfig.setOption("creatorCooldownSeconds", 900); // 15分钟
+        divinityConfig.setOption("creatorGiveAmount", 1); // 默认1
+        defaultConfig.setFeatureConfig("divinity", divinityConfig);
+        
         return defaultConfig;
     }
     
@@ -193,8 +199,27 @@ public class ConfigManager {
             needsSave = true;
         }
         
+        // 确保神格（divinity）配置存在并补全选项
+        FeatureConfig divinity = config.getFeatureConfig("divinity");
+        if (divityNullOrMissing(divinity)) {
+            FeatureConfig divinityConfig = new FeatureConfig(true);
+            divinityConfig.setOption("creatorCooldownSeconds", 900);
+            divinityConfig.setOption("creatorGiveAmount", 1);
+            config.setFeatureConfig("divinity", divinityConfig);
+            needsSave = true;
+        } else {
+            boolean changed = false;
+            if (!divinity.hasOption("creatorCooldownSeconds")) { divinity.setOption("creatorCooldownSeconds", 900); changed = true; }
+            if (!divinity.hasOption("creatorGiveAmount")) { divinity.setOption("creatorGiveAmount", 1); changed = true; }
+            if (changed) { needsSave = true; }
+        }
+        
         if (needsSave) {
             saveConfig();
         }
+    }
+
+    private boolean divityNullOrMissing(FeatureConfig cfg) {
+        return cfg == null || cfg.getOptions() == null;
     }
 }

@@ -12,7 +12,6 @@ import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.advancement.criterion.ImpossibleCriterion;
-import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.registry.RegistryWrapper;
@@ -105,5 +104,21 @@ public class ModAdvancementProvider extends FabricAdvancementProvider {
                 )
                 .criterion("granted_by_code", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
                 .build(consumer, LoosePrincesTool.MOD_ID + ":throne");
+
+        // 高天之上 - 获得造物主效果，由代码授予
+        Advancement.Builder.create()
+                .parent(rootAdvancement)
+                .display(
+                        DivinityFeature.getStaticCreatorDivinityItem(),
+                        Text.translatable("advancements.looseprinces-tool.above_sky.title"),
+                        Text.translatable("advancements.looseprinces-tool.above_sky.description"),
+                        null,
+                        AdvancementFrame.CHALLENGE,
+                        true,
+                        true,
+                        false
+                )
+                .criterion("granted_by_code", Criteria.IMPOSSIBLE.create(new ImpossibleCriterion.Conditions()))
+                .build(consumer, LoosePrincesTool.MOD_ID + ":above_sky");
     }
 }

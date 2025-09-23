@@ -124,6 +124,14 @@ public class FairDuelEventHandler {
         if (feature.getFairDuelEffect() == null) {
             return originalDamage;
         }
+        // 冷却期间禁止公平对决
+        try {
+            long now = victim.getWorld().getTime();
+            if (com.tool.looseprince.util.CreatorCooldownManager.getInstance().isCoolingDown(victim.getUuid(), now)) {
+                return originalDamage;
+            }
+        } catch (Exception ignored) {}
+
         boolean hasEffect = victim.hasStatusEffect(feature.getFairDuelEffect());
         // 容错：效果可能在赋予间隔的边界瞬间缺失，允许5tick宽限
         int nowTick = (int) victim.getWorld().getTime();
@@ -157,6 +165,12 @@ public class FairDuelEventHandler {
     }
 
     private boolean hasFairDuel(PlayerEntity player) {
+        try {
+            long now = player.getWorld().getTime();
+            if (com.tool.looseprince.util.CreatorCooldownManager.getInstance().isCoolingDown(player.getUuid(), now)) {
+                return false;
+            }
+        } catch (Exception ignored) {}
         // 来源1：残缺的神格状态效果（由神格物品授予），允许刷新公平对决
         try {
             DivinityFeature div = (DivinityFeature) FeatureRegistry.getInstance().getFeature("divinity");

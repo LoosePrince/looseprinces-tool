@@ -1,0 +1,27 @@
+{
+  "parent": "looseprinces-tool:root",
+  "criteria": {
+    "granted_by_code": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.looseprinces-tool.above_sky.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "looseprinces-tool:creator_divinity"
+    },
+    "title": {
+      "translate": "advancements.looseprinces-tool.above_sky.title"
+    }
+  },
+  "requirements": [
+    [
+      "granted_by_code"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

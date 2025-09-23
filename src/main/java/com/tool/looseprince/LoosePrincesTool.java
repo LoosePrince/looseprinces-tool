@@ -13,6 +13,8 @@ import com.tool.looseprince.feature.SoulBindingFeature;
 import com.tool.looseprince.feature.FairDuelFeature;
 import com.tool.looseprince.feature.DivinityFeature;
 import com.tool.looseprince.registry.ModItemGroups;
+import com.tool.looseprince.network.CreatorNetwork;
+import com.tool.looseprince.command.DivinityCommands;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.server.MinecraftServer;
@@ -53,6 +55,12 @@ public class LoosePrincesTool implements ModInitializer {
 
 		// 初始化启用的功能
 		initializeFeatures();
+
+		// 注册服务器端网络处理
+		CreatorNetwork.registerServerReceiver();
+
+		// 注册命令
+		DivinityCommands.register();
 
 		LOGGER.info("LoosePrince's Tool 模组初始化完成");
 

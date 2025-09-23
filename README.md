@@ -33,11 +33,26 @@
   - 持有效果时：根据玩家此前对同一生物造成的伤害占该生物生命上限的百分比，调整玩家从该生物处受到的伤害为"玩家生命上限 × 相同百分比 × 伤害转换比例"。该调整无视护甲、减伤（如抗性提升）与额外增伤。
   - 例：玩家对 100 血的铁傀儡造成 1 点伤害（1%），默认转换比例100%，则铁傀儡对玩家造成的伤害被调整为"玩家生命上限的 1%"。
 
+- **神格系统**：
+  - **残缺的神格**：史诗级物品，背包中持续获得"残缺的神格"效果，等同于抗性提升V + 公平对决效果。
+  - **完整的神格**：神话级物品，背包中持续获得"神的力量"效果，提供完全无敌状态、禁用公平对决效果，并自动获得飞行能力。
+  - **造物主的神格**：神话级物品，背包中持续获得"造物主"效果（包含"神的力量"，赋予无敌与生存飞行），并移除"残缺的神格"与"神的力量"效果。按Z（可配置）打开输入界面，输入物品 ID 以获取/扣除物品（成功后进入冷却）。冷却期间玩家将失去并无法获得"造物主"、"神的力量"、"残缺的神格"、"公平对决"效果且无法在生存模式下飞行，并获得用于显示剩余时间的"神力静默"效果，冷却结束时自动清除。
+  - 两种神格物品均无法附魔，具有独特的故事背景和视觉效果。
+
+## 系统要求
+
+- **Minecraft 版本**：1.21
+- **Java 版本**：Java 21 或更高
+- **Fabric Loader**：0.16.14 或更高
+- **Fabric API**：0.102.0+1.21 或兼容版本
+- **操作系统**：Windows、macOS、Linux
+
 ## 安装方法
 
 1. 安装 [Fabric Loader](https://fabricmc.net/use/) 和 [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)。
 2. 下载本模组的 jar 文件，放入 `mods` 文件夹。
 3. 启动游戏，模组会自动加载。
+4. 首次运行后，可在 `config/looseprinces-tool.json` 中调整配置。
 
 ## 配置说明
 
@@ -75,6 +90,9 @@
     "fair_duel": {
       "enabled": true,
       "damageRatio": 1.0
+    },
+    "divinity": {
+      "enabled": true
     }
   }
 }
@@ -111,16 +129,69 @@
   - `0.5` = 50% 转换（减半伤害）
   - `2.0` = 200% 转换（双倍伤害）
 
+#### 神格系统 (divinity)
+- `enabled`: 是否启用神格功能
+- `creatorCooldownSeconds`: 造物主获取/扣除后进入的冷却秒数（默认：900）
+- `creatorGiveAmount`: 获取/扣除的数量（范围 -64 到 640，默认：1；负数为扣除）
+
+### 命令
+
+- `/lpt divinity clear_silence`：移除自身的"神力静默"效果并结束冷却
+
+## 进度系统
+
+本模组包含完整的进度系统，记录玩家的冒险历程：
+
+### 进度列表
+
+- **LoosePrince的工具箱** - 根进度，模组的入口
+- **亵渎者的羽翼** - 获得飞行符文或在生存模式下飞行
+- **神之尺度** - 激活公平对决效果
+- **窃火者的荆棘冠** - 获得残缺的神格效果
+- **王座承认了你** - 获得完整的神格效果
+- **高天之上** - 获得“造物主”效果
+
 ## 开发与贡献
 
 欢迎提交 Issue 或 PR 参与开发！
-- 代码结构清晰，功能注册与配置均有注释说明。
-- 新功能请实现 `Feature` 接口并注册到 `FeatureRegistry`。
-- 详细开发文档与 API 说明请见源码注释。
+
+### 项目结构
+
+```
+src/main/java/com/tool/looseprince/
+├── LoosePrincesTool.java          # 模组主类
+├── config/                        # 配置管理
+│   ├── Config.java                # 配置数据类
+│   ├── ConfigManager.java         # 配置管理器
+│   └── FeatureConfig.java         # 功能配置基类
+├── feature/                       # 功能模块
+│   ├── Feature.java               # 功能接口
+│   ├── FeatureRegistry.java       # 功能注册器
+│   ├── FlyingRuneFeature.java     # 飞行符文
+│   ├── BindingEnchantmentFeature.java # 绑定附魔
+│   ├── SoulBindingFeature.java    # 灵魂绑定
+│   ├── FairDuelFeature.java       # 公平对决
+│   └── DivinityFeature.java       # 神格系统
+├── event/                         # 事件处理
+├── item/                          # 自定义物品
+├── registry/                      # 注册管理
+└── datagen/                       # 数据生成
+```
+
+### 开发指南
+
+- **代码结构**：采用模块化设计，所有功能均为独立模块，互不干扰
+- **新功能开发**：实现 `Feature` 接口并注册到 `FeatureRegistry`
+- **配置系统**：每个功能都有独立的配置类，支持 JSON 序列化
+- **事件系统**：使用 Fabric 事件系统进行功能交互
+- **本地化**：支持中文和英文，所有文本均在 `lang` 文件中定义
 
 ### 调试提示
 
-- 使用 `./gradlew runClient` 启动开发客户端。
+- 使用 `./gradlew runClient` 启动开发客户端
+- 使用 `./gradlew runDatagen` 生成数据文件
+- 配置文件位于 `run/config/looseprinces-tool.json`
+- 日志文件位于 `run/logs/` 目录
 
 ## 致谢与协议
 

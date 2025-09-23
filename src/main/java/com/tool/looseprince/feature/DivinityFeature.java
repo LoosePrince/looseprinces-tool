@@ -6,6 +6,7 @@ import com.tool.looseprince.config.FeatureConfig;
 import com.tool.looseprince.event.DivinityEventHandler;
 import com.tool.looseprince.item.CompleteDivinityItem;
 import com.tool.looseprince.item.ImperfectDivinityItem;
+import com.tool.looseprince.item.CreatorDivinityItem;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.item.Item;
@@ -30,16 +31,22 @@ public class DivinityFeature implements Feature {
     // 物品
     private Item imperfectDivinityItem;
     private Item completeDivinityItem;
+    private Item creatorDivinityItem;
     private static Item staticImperfectDivinityItem;
     private static Item staticCompleteDivinityItem;
+    private static Item staticCreatorDivinityItem;
 
     // 状态效果键
     public static final RegistryKey<StatusEffect> IMPERFECT_DIVINITY_EFFECT_KEY = RegistryKey.of(RegistryKeys.STATUS_EFFECT, Identifier.of(LoosePrincesTool.MOD_ID, "imperfect_divinity"));
     public static final RegistryKey<StatusEffect> DIVINE_POWER_EFFECT_KEY = RegistryKey.of(RegistryKeys.STATUS_EFFECT, Identifier.of(LoosePrincesTool.MOD_ID, "divine_power"));
+    public static final RegistryKey<StatusEffect> CREATOR_EFFECT_KEY = RegistryKey.of(RegistryKeys.STATUS_EFFECT, Identifier.of(LoosePrincesTool.MOD_ID, "creator"));
+    public static final RegistryKey<StatusEffect> DIVINE_SILENCE_EFFECT_KEY = RegistryKey.of(RegistryKeys.STATUS_EFFECT, Identifier.of(LoosePrincesTool.MOD_ID, "divine_silence"));
 
     // 注册后引用
     private RegistryEntry<StatusEffect> imperfectDivinityEffect;
     private RegistryEntry<StatusEffect> divinePowerEffect;
+    private RegistryEntry<StatusEffect> creatorEffect;
+    private RegistryEntry<StatusEffect> divineSilenceEffect;
 
     // 事件
     private DivinityEventHandler eventHandler;
@@ -95,12 +102,15 @@ public class DivinityFeature implements Feature {
 
             imperfectDivinityItem = new ImperfectDivinityItem(settingsEpic);
             completeDivinityItem = new CompleteDivinityItem(settingsEpic);
+            creatorDivinityItem = new CreatorDivinityItem(settingsMythic);
 
             staticImperfectDivinityItem = imperfectDivinityItem;
             staticCompleteDivinityItem = completeDivinityItem;
+            staticCreatorDivinityItem = creatorDivinityItem;
 
             Registry.register(Registries.ITEM, Identifier.of(LoosePrincesTool.MOD_ID, "imperfect_divinity"), imperfectDivinityItem);
             Registry.register(Registries.ITEM, Identifier.of(LoosePrincesTool.MOD_ID, "complete_divinity"), completeDivinityItem);
+            Registry.register(Registries.ITEM, Identifier.of(LoosePrincesTool.MOD_ID, "creator_divinity"), creatorDivinityItem);
 
             LoosePrincesTool.LOGGER.info("神格物品注册成功");
         } catch (Exception e) {
@@ -112,12 +122,18 @@ public class DivinityFeature implements Feature {
         try {
             StatusEffect imperfect = new StatusEffect(StatusEffectCategory.BENEFICIAL, 0x7E57C2) {};
             StatusEffect divine = new StatusEffect(StatusEffectCategory.BENEFICIAL, 0xFFD700) {};
+            StatusEffect creator = new StatusEffect(StatusEffectCategory.BENEFICIAL, 0x00E5FF) {};
+            StatusEffect silence = new StatusEffect(StatusEffectCategory.NEUTRAL, 0x777777) {};
 
             StatusEffect impReg = Registry.register(Registries.STATUS_EFFECT, Identifier.of(LoosePrincesTool.MOD_ID, "imperfect_divinity"), imperfect);
             StatusEffect divReg = Registry.register(Registries.STATUS_EFFECT, Identifier.of(LoosePrincesTool.MOD_ID, "divine_power"), divine);
+            StatusEffect creatorReg = Registry.register(Registries.STATUS_EFFECT, Identifier.of(LoosePrincesTool.MOD_ID, "creator"), creator);
+            StatusEffect silenceReg = Registry.register(Registries.STATUS_EFFECT, Identifier.of(LoosePrincesTool.MOD_ID, "divine_silence"), silence);
 
             this.imperfectDivinityEffect = Registries.STATUS_EFFECT.getEntry(impReg);
             this.divinePowerEffect = Registries.STATUS_EFFECT.getEntry(divReg);
+            this.creatorEffect = Registries.STATUS_EFFECT.getEntry(creatorReg);
+            this.divineSilenceEffect = Registries.STATUS_EFFECT.getEntry(silenceReg);
 
             LoosePrincesTool.LOGGER.info("神格状态效果注册成功");
         } catch (Exception e) {
@@ -133,6 +149,10 @@ public class DivinityFeature implements Feature {
         return completeDivinityItem;
     }
 
+    public Item getCreatorDivinityItem() {
+        return creatorDivinityItem;
+    }
+
     public static Item getStaticImperfectDivinityItem() {
         return staticImperfectDivinityItem;
     }
@@ -141,12 +161,24 @@ public class DivinityFeature implements Feature {
         return staticCompleteDivinityItem;
     }
 
+    public static Item getStaticCreatorDivinityItem() {
+        return staticCreatorDivinityItem;
+    }
+
     public RegistryEntry<StatusEffect> getImperfectDivinityEffect() {
         return imperfectDivinityEffect;
     }
 
     public RegistryEntry<StatusEffect> getDivinePowerEffect() {
         return divinePowerEffect;
+    }
+
+    public RegistryEntry<StatusEffect> getCreatorEffect() {
+        return creatorEffect;
+    }
+
+    public RegistryEntry<StatusEffect> getDivineSilenceEffect() {
+        return divineSilenceEffect;
     }
 }
 

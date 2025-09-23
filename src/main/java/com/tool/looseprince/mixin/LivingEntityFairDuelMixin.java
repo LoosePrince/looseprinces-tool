@@ -34,13 +34,17 @@ public abstract class LivingEntityFairDuelMixin {
         lp_fairduel_preHealth = self.getHealth();
         lp_fairduel_lastSource = source;
 
-        // 优先检查神力无敌：完全阻止伤害
+        // 优先检查神力无敌（包含造物主）：完全阻止伤害
         if (self instanceof PlayerEntity playerVictim) {
             DivinityFeature div = (DivinityFeature) FeatureRegistry.getInstance().getFeature("divinity");
-            if (div != null && div.getDivinePowerEffect() != null && playerVictim.hasStatusEffect(div.getDivinePowerEffect())) {
-                LoosePrincesTool.LOGGER.info("[Divinity] Divine power active, cancel damage for {}", playerVictim.getName().getString());
-                cir.setReturnValue(false); // 完全阻止伤害处理
-                return;
+            if (div != null) {
+                boolean hasGodPower = div.getDivinePowerEffect() != null && playerVictim.hasStatusEffect(div.getDivinePowerEffect());
+                boolean hasCreator = div.getCreatorEffect() != null && playerVictim.hasStatusEffect(div.getCreatorEffect());
+                if (hasGodPower || hasCreator) {
+                    LoosePrincesTool.LOGGER.info("[Divinity] Invulnerable (god/creator) active, cancel damage for {}", playerVictim.getName().getString());
+                    cir.setReturnValue(false); // 完全阻止伤害处理
+                    return;
+                }
             }
         }
     }

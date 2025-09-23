@@ -37,6 +37,7 @@ public class ModItemGroups {
                             entries.add(FairDuelFeature.getStaticItem());
                             entries.add(DivinityFeature.getStaticImperfectDivinityItem());
                             entries.add(DivinityFeature.getStaticCompleteDivinityItem());
+                            try { entries.add(DivinityFeature.getStaticCreatorDivinityItem()); } catch (Exception ignored) {}
                             
                             // 添加绑定附魔书
                             try {

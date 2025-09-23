@@ -48,7 +48,7 @@
 
 ```json
 {
-  "version": "1.0.3",
+  "version": "1.0.4",
   "features": {
     "flying_rune": {
       "enabled": true,

@@ -7,6 +7,7 @@
   "itemGroup.looseprinces-tool.main": "LoosePrince's Tool",
   "enchantment.looseprinces-tool.binding": "Binding",
   "enchantment.looseprinces-tool.soul_binding": "Soul Binding",
+  "tooltip.looseprinces-tool.bound_to": "Bound to: %s%s",
   "item.looseprinces-tool.fair_duel": "Fair Duel",
   "item.looseprinces-tool.fair_duel.tooltip.line1": "Adjust the player's damage received by the percentage of the damage caused by the holder to other living beings (ignoring damage reduction and additional effects) to the same percentage.",
   "item.looseprinces-tool.fair_duel.tooltip.line2": "Keep in inventory to enable",

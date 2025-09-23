@@ -20,6 +20,7 @@ public abstract class SlotSoulBindingMixin {
     private void lpt$preventTakeByOthers(PlayerEntity player, CallbackInfoReturnable<Boolean> cir) {
         if (!(player instanceof ServerPlayerEntity)) return;
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
+        if (serverPlayer.getAbilities() != null && serverPlayer.getAbilities().creativeMode) return; // 创造模式不拦截
         Slot self = (Slot) (Object) this;
         ItemStack stack = self.getStack();
         if (stack == null || stack.isEmpty()) return;

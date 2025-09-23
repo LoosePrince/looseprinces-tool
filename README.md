@@ -22,6 +22,11 @@
   - 附魔给物品后会记录玩家的 UUID，物品描述中显示"已绑定至:玩家名(uuid)"。
   - 附魔灵魂绑定后该物品丢出后无法被其它玩家拾取。
   - 在容器中（如箱子、漏斗等）无法被其它玩家拿起或移动（包括快捷键移动）。
+  - 创造模式玩家不受上述拾取/移动限制影响。
+  - 提供 II 级：
+    - 掉落后 N 秒（默认 30s）自动回到绑定者（优先放入背包，否则传送至脚下）。
+    - 岩浆中不会被烧毁，并会缓慢上浮。
+    - 虚空中不会被销毁，会被抬升至世界底部线上方并上浮脱离。
 
 - **公平对决**：
   - 放在背包中时，每 0.5 秒自动赋予 1 秒的同名药水效果。
@@ -62,7 +67,10 @@
       "enabled": true,
       "preventPickup": true,
       "preventContainerTake": true,
-      "showOwnerTooltip": true
+      "showOwnerTooltip": true,
+      "level2TeleportSeconds": 30,
+      "lavaImmune": true,
+      "voidDestroyable": false
     },
     "fair_duel": {
       "enabled": true,
@@ -92,6 +100,9 @@
 - `preventPickup`: 是否阻止其他玩家拾取（默认：true）
 - `preventContainerTake`: 是否阻止其他玩家从容器中取出（默认：true）
 - `showOwnerTooltip`: 是否显示拥有者信息提示（默认：true）
+- `level2TeleportSeconds`: 掉落后自动回到拥有者的时间（默认：30s）
+- `lavaImmune`: 是否对岩浆免疫（默认：true）
+- `voidDestroyable`: 是否允许被虚空销毁（默认：false）
 
 #### 公平对决 (fair_duel)
 - `enabled`: 是否启用公平对决功能

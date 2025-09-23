@@ -66,6 +66,10 @@ public class SoulBindingFeature implements Feature {
         config.setOption("preventPickup", true);  // 是否阻止其他玩家拾取
         config.setOption("preventContainerTake", true);  // 是否阻止其他玩家从容器中取出
         config.setOption("showOwnerTooltip", true);  // 是否显示拥有者信息
+        // 2级扩展能力
+        config.setOption("level2TeleportSeconds", 30); // 丢弃后自动回到拥有者的时间（秒）
+        config.setOption("lavaImmune", true); // 是否对岩浆免疫
+        config.setOption("voidDestroyable", false); // 是否允许被虚空销毁
         
         return config;
     }
@@ -92,6 +96,21 @@ public class SoulBindingFeature implements Feature {
     public boolean shouldShowOwnerTooltip() {
         FeatureConfig config = getConfig();
         return config != null && config.getBooleanOption("showOwnerTooltip", true);
+    }
+    
+    public int getLevel2TeleportSeconds() {
+        FeatureConfig config = getConfig();
+        return config != null ? config.getIntOption("level2TeleportSeconds", 30) : 30;
+    }
+    
+    public boolean isLavaImmune() {
+        FeatureConfig config = getConfig();
+        return config != null && config.getBooleanOption("lavaImmune", true);
+    }
+    
+    public boolean isVoidDestroyable() {
+        FeatureConfig config = getConfig();
+        return config != null && config.getBooleanOption("voidDestroyable", false);
     }
     
     @Override

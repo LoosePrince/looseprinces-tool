@@ -2,6 +2,8 @@ package com.tool.looseprince.util;
 
 import com.tool.looseprince.LoosePrincesTool;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.component.DataComponentTypes;
@@ -10,6 +12,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.registry.Registries;
 
 import java.util.UUID;
 
@@ -23,6 +27,7 @@ public final class SoulBindingUtils {
     // NBT key 常量
     public static final String NBT_OWNER_UUID = "lpt_soul_owner_uuid";
     public static final String NBT_OWNER_NAME = "lpt_soul_owner_name";
+    public static final String NBT_DROP_TICK = "lpt_soul_drop_tick";
 
     // 本模组的灵魂绑定附魔 id（用于字符串匹配兜底）
     public static final String SOUL_BINDING_ID = Identifier.of(LoosePrincesTool.MOD_ID, "soul_binding").toString();
@@ -32,14 +37,25 @@ public final class SoulBindingUtils {
      * 说明：为了兼容不同 Yarn/Fabric 版本的 EnchantmentHelper 返回结构，这里使用字符串匹配兜底。
      */
     public static boolean hasSoulBinding(ItemStack stack) {
-        if (stack == null || stack.isEmpty()) return false;
+        return getSoulBindingLevel(stack) > 0;
+    }
+
+    /**
+     * 获取灵魂绑定附魔等级（优先使用官方API）
+     */
+    public static int getSoulBindingLevel(ItemStack stack) {
         try {
-            String ench = EnchantmentHelper.getEnchantments(stack).toString();
-            // 匹配本模组的 soul_binding 附魔
-            return ench.contains(SOUL_BINDING_ID) || ench.contains("soul_binding");
-        } catch (Exception e) {
-            return false;
-        }
+            ItemEnchantmentsComponent comp = EnchantmentHelper.getEnchantments(stack);
+            java.util.Set<RegistryEntry<Enchantment>> set = comp.getEnchantments();
+            for (RegistryEntry<Enchantment> e : set) {
+                if (e.matchesKey(com.tool.looseprince.feature.SoulBindingFeature.SOUL_BINDING)) {
+                    int v = comp.getLevel(e);
+                    return v > 0 ? v : 1;
+                }
+            }
+        } catch (Throwable ignored) {}
+        // 兜底：未能解析到则视为未附魔
+        return 0;
     }
 
     /**
@@ -102,7 +118,7 @@ public final class SoulBindingUtils {
         UUID uuid = getOwnerUuid(stack);
         String shown = name != null ? name : (uuid != null ? uuid.toString() : "?");
         String uuidPart = uuid != null ? "(" + uuid + ")" : "";
-        return Text.literal("已绑定至: " + shown + uuidPart).formatted(Formatting.GRAY);
+        return Text.translatable("tooltip.looseprinces-tool.bound_to", shown, uuidPart).formatted(Formatting.GRAY);
     }
 
     private static NbtCompound getCustomData(ItemStack stack) {
@@ -119,6 +135,17 @@ public final class SoulBindingUtils {
             stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
         } catch (Exception ignored) {
         }
+    }
+
+    public static void markDropTick(ItemStack stack, int tick) {
+        NbtCompound nbt = getCustomData(stack);
+        nbt.putInt(NBT_DROP_TICK, tick);
+        setCustomData(stack, nbt);
+    }
+
+    public static int getDropTick(ItemStack stack) {
+        NbtCompound nbt = getCustomData(stack);
+        return nbt.contains(NBT_DROP_TICK) ? nbt.getInt(NBT_DROP_TICK) : -1;
     }
 }
 

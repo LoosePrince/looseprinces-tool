@@ -8,7 +8,8 @@
 		"LivingEntityFairDuelMixin",
 		"ItemEntitySoulBindingMixin",
 		"PlayerInventorySoulBindingMixin",
-		"SlotSoulBindingMixin"
+		"SlotSoulBindingMixin",
+		"ItemEntitySoulBindingDamageMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

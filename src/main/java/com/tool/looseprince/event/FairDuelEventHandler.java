@@ -171,6 +171,17 @@ public class FairDuelEventHandler {
                 return false;
             }
         } catch (Exception ignored) {}
+		// 拥有造物主/神的力量效果时，禁止公平对决
+		try {
+			DivinityFeature div = (DivinityFeature) FeatureRegistry.getInstance().getFeature("divinity");
+			if (div != null) {
+				boolean creatorActive = div.getCreatorEffect() != null && player.hasStatusEffect(div.getCreatorEffect());
+				boolean divinePowerActive = div.getDivinePowerEffect() != null && player.hasStatusEffect(div.getDivinePowerEffect());
+				if (creatorActive || divinePowerActive) {
+					return false;
+				}
+			}
+		} catch (Exception ignored) {}
         // 来源1：残缺的神格状态效果（由神格物品授予），允许刷新公平对决
         try {
             DivinityFeature div = (DivinityFeature) FeatureRegistry.getInstance().getFeature("divinity");

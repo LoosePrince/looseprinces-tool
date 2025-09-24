@@ -11,11 +11,12 @@ base {
 }
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
+    // Add repositories to retrieve artifacts from in here.
+    // You should only use this when depending on other mods because
+    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+    // for more information about repositories.
+    mavenCentral()
 }
 
 loom {
@@ -55,6 +56,11 @@ dependencies {
 	
 	// Gson for JSON serialization/deserialization
 	implementation "com.google.code.gson:gson:2.10.1"
+
+	// NightConfig TOML for human-friendly TOML with comments
+	implementation "com.electronwill.night-config:toml:3.6.7"
+	include "com.electronwill.night-config:toml:3.6.7"
+	include "com.electronwill.night-config:core:3.6.7"
 }
 
 processResources {

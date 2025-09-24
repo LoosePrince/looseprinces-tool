@@ -103,6 +103,10 @@ public class DivinityEventHandler {
                                 player.sendAbilitiesUpdate();
                             }
                         }
+                        // 非冷却状态下，若仍带有神力静默，则移除
+                        if (feature.getDivineSilenceEffect() != null && player.hasStatusEffect(feature.getDivineSilenceEffect())) {
+                            player.removeStatusEffect(feature.getDivineSilenceEffect());
+                        }
                     } else if (hasComplete && feature.getDivinePowerEffect() != null) {
                         // 神的力量（无敌），并清理公平对决效果
                         player.addStatusEffect(new StatusEffectInstance(feature.getDivinePowerEffect(), 30, 0, true, true, true));
@@ -119,6 +123,10 @@ public class DivinityEventHandler {
                                 player.getAbilities().allowFlying = true;
                                 player.sendAbilitiesUpdate();
                             }
+                        }
+                        // 非冷却状态下，若仍带有神力静默，则移除
+                        if (feature.getDivineSilenceEffect() != null && player.hasStatusEffect(feature.getDivineSilenceEffect())) {
+                            player.removeStatusEffect(feature.getDivineSilenceEffect());
                         }
                     } else if (hasImperfect) {
                         // 残缺的神格：仅赋予自定义状态效果，该效果内部包含抗性提升V和公平对决功能
@@ -152,9 +160,22 @@ public class DivinityEventHandler {
                     if (feature.getImperfectDivinityEffect() != null && player.hasStatusEffect(feature.getImperfectDivinityEffect())) {
                         // 抗性提升V（amplifier 4）
                         player.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 30, 4, true, true, true));
-                        // 公平对决效果
+                        // 公平对决效果（若拥有造物主或神的力量，则不赋予）
                         if (fair != null && fair.getFairDuelEffect() != null) {
-                            player.addStatusEffect(new StatusEffectInstance(fair.getFairDuelEffect(), 30, 0, true, true, true));
+                            boolean blockFair = false;
+                            try {
+                                boolean creatorActive = feature.getCreatorEffect() != null && player.hasStatusEffect(feature.getCreatorEffect());
+                                boolean divinePowerActive = feature.getDivinePowerEffect() != null && player.hasStatusEffect(feature.getDivinePowerEffect());
+                                blockFair = creatorActive || divinePowerActive;
+                            } catch (Exception ignored) {}
+                            if (!blockFair) {
+                                player.addStatusEffect(new StatusEffectInstance(fair.getFairDuelEffect(), 30, 0, true, true, true));
+                            } else {
+                                // 若已有则移除，确保“不会因为公平对决或残缺神格获得”
+                                if (player.hasStatusEffect(fair.getFairDuelEffect())) {
+                                    player.removeStatusEffect(fair.getFairDuelEffect());
+                                }
+                            }
                         }
                     }
                 }

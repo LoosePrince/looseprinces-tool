@@ -7,7 +7,7 @@
 ## 主要特性
 
 - **模块化设计**：所有功能均为独立模块，互不干扰，易于扩展。
-- **完善的配置系统**：所有功能均可通过 JSON 配置文件灵活调整。
+- **完善的配置系统**：所有功能均可通过 TOML 配置文件灵活调整（含注释）。
 - **日志与热重载**：支持日志输出与功能热重载，方便调试与维护。
 
 ## 功能列表
@@ -45,94 +45,88 @@
 - **Java 版本**：Java 21 或更高
 - **Fabric Loader**：0.16.14 或更高
 - **Fabric API**：0.102.0+1.21 或兼容版本
-- **操作系统**：Windows、macOS、Linux
 
 ## 安装方法
 
 1. 安装 [Fabric Loader](https://fabricmc.net/use/) 和 [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)。
 2. 下载本模组的 jar 文件，放入 `mods` 文件夹。
 3. 启动游戏，模组会自动加载。
-4. 首次运行后，可在 `config/looseprinces-tool.json` 中调整配置。
+4. 首次运行后，可在 `config/looseprinces-tool.toml` 中调整配置。
 
 ## 配置说明
 
-- 配置文件路径：`config/looseprinces-tool.json`
-- 可通过编辑 JSON 文件启用/禁用各功能及其详细选项。
+- 配置文件路径：`config/looseprinces-tool.toml`
+- 直接编辑 TOML 文件即可启用/禁用各功能及其详细选项（文件内已包含注释说明）。
 
-### 完整配置示例
+### 完整配置示例（TOML，含注释）
 
-```json
-{
-  "version": "1.0.5",
-  "features": {
-    "flying_rune": {
-      "enabled": true,
-      "allowInNether": true,
-      "allowInEnd": true,
-      "preventFallDamage": true,
-      "requireInInventory": true
-    },
-    "binding_enchantment": {
-      "enabled": true,
-      "preventDrop": true,
-      "affectAllItems": true,
-      "maxLevel": 1
-    },
-    "soul_binding": {
-      "enabled": true,
-      "preventPickup": true,
-      "preventContainerTake": true,
-      "showOwnerTooltip": true,
-      "level2TeleportSeconds": 30,
-      "lavaImmune": true,
-      "voidDestroyable": false
-    },
-    "fair_duel": {
-      "enabled": true,
-      "damageRatio": 1.0
-    },
-    "divinity": {
-      "enabled": true
-    }
-  }
-}
+```toml
+# LoosePrince's Tool 配置文件（TOML）
+# 修改后保存即可，部分功能支持热重载，或重启游戏生效
+
+# 模组配置版本，用于兼容性校验
+version = "1.0.5"
+
+# 各功能模块配置
+
+# ------------------------ 飞行符文 ------------------------
+[features.flying_rune]
+# 启用本功能
+enabled = true
+[features.flying_rune.options]
+# 是否允许在下界使用（默认 true）
+allowInNether = true
+# 是否允许在末地使用（默认 true）
+allowInEnd = true
+# 是否防止摔落伤害（默认 true）
+preventFallDamage = true
+# true=背包中即可飞行；false=需手持（默认 true）
+requireInInventory = true
+
+# ---------------------- 绑定附魔 ----------------------
+[features.binding_enchantment]
+enabled = true
+[features.binding_enchantment.options]
+# 是否防止掉落（默认 true）
+preventDrop = true
+# 是否影响所有物品（默认 true）
+affectAllItems = true
+# 附魔最大等级（默认 1）
+maxLevel = 1
+
+# ---------------------- 灵魂绑定 ----------------------
+[features.soul_binding]
+enabled = true
+[features.soul_binding.options]
+# 是否阻止其他玩家拾取（默认 true）
+preventPickup = true
+# 是否阻止其他玩家从容器中取出（默认 true）
+preventContainerTake = true
+# 是否显示拥有者信息（默认 true）
+showOwnerTooltip = true
+# II级: 掉落后自动回到拥有者秒数（默认 30）
+level2TeleportSeconds = 30
+# II级: 岩浆免疫（默认 true）
+lavaImmune = true
+# II级: 是否允许被虚空销毁（默认 false）
+voidDestroyable = false
+
+# ---------------------- 公平对决 ----------------------
+[features.fair_duel]
+enabled = true
+[features.fair_duel.options]
+# 伤害转换比例：1.0=100% 0.5=50% 2.0=200%（默认 1.0）
+damageRatio = 1.0
+
+# ---------------------- 神格系统 ----------------------
+[features.divinity]
+enabled = true
+[features.divinity.options]
+# 造物主冷却秒数（默认 900）
+creatorCooldownSeconds = 900
+# 获取/扣除的数量（范围 -64..640，默认 1；负数为扣除）
+creatorGiveAmount = 1
 ```
-
-### 参数说明
-
-#### 飞行符文 (flying_rune)
-- `enabled`: 是否启用飞行符文功能
-- `allowInNether`: 是否允许在下界使用（默认：true）
-- `allowInEnd`: 是否允许在末地使用（默认：true）
-- `preventFallDamage`: 是否防止摔落伤害（默认：true）
-- `requireInInventory`: 是否在背包中时即可飞行，false时需手持物品才能飞行（默认：true）
-
-#### 绑定附魔 (binding_enchantment)
-- `enabled`: 是否启用绑定附魔功能
-- `preventDrop`: 是否防止物品掉落（默认：true）
-- `affectAllItems`: 是否影响所有物品（默认：true）
-- `maxLevel`: 附魔最大等级（默认：1）
-
-#### 灵魂绑定 (soul_binding)
-- `enabled`: 是否启用灵魂绑定附魔功能
-- `preventPickup`: 是否阻止其他玩家拾取（默认：true）
-- `preventContainerTake`: 是否阻止其他玩家从容器中取出（默认：true）
-- `showOwnerTooltip`: 是否显示拥有者信息提示（默认：true）
-- `level2TeleportSeconds`: 掉落后自动回到拥有者的时间（默认：30s）
-- `lavaImmune`: 是否对岩浆免疫（默认：true）
-- `voidDestroyable`: 是否允许被虚空销毁（默认：false）
-
-#### 公平对决 (fair_duel)
-- `enabled`: 是否启用公平对决功能
-- `damageRatio`: 伤害转换比例（默认：1.0，即100%）
-  - `1.0` = 100% 转换（完全等比例）
-  - `0.5` = 50% 转换（减半伤害）
-  - `2.0` = 200% 转换（双倍伤害）
-
-#### 神格系统 (divinity)
-- `enabled`: 是否启用神格功能
-- `creatorCooldownSeconds`: 造物主获取/扣除后进入的冷却秒数（默认：900）
-- `creatorGiveAmount`: 获取/扣除的数量（范围 -64 到 640，默认：1；负数为扣除）
 
 ### 命令
 
@@ -151,32 +145,17 @@
 - **王座承认了你** - 获得完整的神格效果
 - **高天之上** - 获得“造物主”效果
 
+### 进度获取
+
+- **亵渎者的羽翼**：获得飞行符文或在生存模式下获得飞行能力
+- **神之尺度**：获得“公平对决”效果
+- **窃火者的荆棘冠**：获得“残缺的神格”效果
+- **王座承认了你**：获得“神的力量”效果
+- **高天之上**：获得“造物主”效果
+
 ## 开发与贡献
 
 欢迎提交 Issue 或 PR 参与开发！
-
-### 项目结构
-
-```
-src/main/java/com/tool/looseprince/
-├── LoosePrincesTool.java          # 模组主类
-├── config/                        # 配置管理
-│   ├── Config.java                # 配置数据类
-│   ├── ConfigManager.java         # 配置管理器
-│   └── FeatureConfig.java         # 功能配置基类
-├── feature/                       # 功能模块
-│   ├── Feature.java               # 功能接口
-│   ├── FeatureRegistry.java       # 功能注册器
-│   ├── FlyingRuneFeature.java     # 飞行符文
-│   ├── BindingEnchantmentFeature.java # 绑定附魔
-│   ├── SoulBindingFeature.java    # 灵魂绑定
-│   ├── FairDuelFeature.java       # 公平对决
-│   └── DivinityFeature.java       # 神格系统
-├── event/                         # 事件处理
-├── item/                          # 自定义物品
-├── registry/                      # 注册管理
-└── datagen/                       # 数据生成
-```
 
 ### 开发指南
 
@@ -190,7 +169,7 @@ src/main/java/com/tool/looseprince/
 
 - 使用 `./gradlew runClient` 启动开发客户端
 - 使用 `./gradlew runDatagen` 生成数据文件
-- 配置文件位于 `run/config/looseprinces-tool.json`
+- 配置文件位于 `run/config/looseprinces-tool.toml`
 - 日志文件位于 `run/logs/` 目录
 
 ## 致谢与协议

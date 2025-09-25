@@ -55,5 +55,11 @@
   "advancements.looseprinces-tool.throne.title": "The Throne Admits You",
   "advancements.looseprinces-tool.throne.description": "Ascend the throne, taste the eternity of silence.",
   "advancements.looseprinces-tool.above_sky.title": "Above the Heavens",
-  "advancements.looseprinces-tool.above_sky.description": "Gain the 'Creator' status effect"
+  "advancements.looseprinces-tool.above_sky.description": "Gain the 'Creator' status effect",
+  "tooltip.looseprinces-tool.cooldown.reason": "This item is on cooldown due to %s",
+  "tooltip.looseprinces-tool.reason.silence": "Divine Silence",
+  "tooltip.looseprinces-tool.reason.cooldown": "Cooldown",
+  "tooltip.looseprinces-tool.disabled.reason": "This item is %s and has been disabled; %s to resolve",
+  "tooltip.looseprinces-tool.reason.not_owner": "not yours",
+  "tooltip.looseprinces-tool.solution.return_or_drop": "return to owner or drop"
 }

@@ -56,6 +56,9 @@ public class LoosePrincesTool implements ModInitializer {
 		// 初始化启用的功能
 		initializeFeatures();
 
+		// 冷却tick
+		com.tool.looseprince.event.CooldownTickHandler.register();
+
 		// 注册服务器端网络处理
 		CreatorNetwork.registerServerReceiver();
 

@@ -6,6 +6,7 @@ import com.tool.looseprince.config.FeatureConfig;
 import com.tool.looseprince.feature.DivinityFeature;
 import com.tool.looseprince.feature.FeatureRegistry;
 import com.tool.looseprince.item.FlyingRuneItem;
+import com.tool.looseprince.impl.CooldownService;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -51,7 +52,9 @@ public final class FlightLogic {
             boolean requireInInventory = config == null || config.getBooleanOption("requireInInventory", true);
             boolean hasRune = requireInInventory ? hasRuneInInventory(player) : hasRuneInHand(player);
 
-            boolean allow = hasRune || hasGodLikePower;
+            // 玩家级冷却（神力静默等）：视为不持有
+            boolean playerCooling = CooldownService.isPlayerCooling(player, com.tool.looseprince.logic.CooldownKeys.FLYING_RUNE);
+            boolean allow = (hasRune || hasGodLikePower) && !playerCooling;
             return new FlightDecision(allow, preventFallDamage);
         } catch (Exception e) {
             LoosePrincesTool.LOGGER.error("[logic] 评估飞行判定失败", e);

@@ -4,6 +4,7 @@ import com.tool.looseprince.config.ConfigManager;
 import com.tool.looseprince.feature.DivinityFeature;
 import com.tool.looseprince.feature.FeatureRegistry;
 import com.tool.looseprince.register.FairDuelRegistrar;
+import com.tool.looseprince.impl.CooldownService;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
@@ -52,7 +53,8 @@ public final class FairDuelLogic {
             return;
         }
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-            if (isCooling(player, time) || isBlockedByDivinity(player)) {
+            boolean playerCooling = CooldownService.isPlayerCooling(player, com.tool.looseprince.logic.CooldownKeys.FAIR_DUEL);
+            if (isCooling(player, time) || isBlockedByDivinity(player) || playerCooling) {
                 continue;
             }
             if (hasAnyFairDuelSource(player)) {

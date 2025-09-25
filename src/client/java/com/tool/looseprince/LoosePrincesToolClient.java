@@ -96,6 +96,66 @@ public class LoosePrincesToolClient implements ClientModInitializer {
 			} catch (Exception ignored) {}
 		});
 
+		// 追加 冷却/禁用 提示（放在最后一行）
+		ItemTooltipCallback.EVENT.register((stack, ctx, type2, lines) -> {
+			try {
+				MinecraftClient mc = MinecraftClient.getInstance();
+				if (mc == null || mc.player == null) return;
+				boolean showDisabled = false;
+				Text disabledReason = null;
+				Text disabledSolution = null;
+
+				// 灵魂绑定：非拥有者 → 禁用
+				try {
+					if (com.tool.looseprince.util.SoulBindingUtils.hasSoulBinding(stack)
+							&& com.tool.looseprince.util.SoulBindingUtils.hasOwner(stack)) {
+						java.util.UUID owner = com.tool.looseprince.util.SoulBindingUtils.getOwnerUuid(stack);
+						if (owner != null && !owner.equals(mc.player.getUuid())) {
+							showDisabled = true;
+							disabledReason = Text.translatable("tooltip.looseprinces-tool.reason.not_owner");
+							disabledSolution = Text.translatable("tooltip.looseprinces-tool.solution.return_or_drop");
+						}
+					}
+				} catch (Exception ignored) {}
+
+				if (showDisabled) {
+					lines.add(Text.translatable("tooltip.looseprinces-tool.disabled.reason", disabledReason, disabledSolution)
+							.formatted(net.minecraft.util.Formatting.RED));
+					return;
+				}
+
+				// 冷却遮罩提示：仅对本模组相关物品在“神力静默”时提示；任意物品自身冷却时提示
+				boolean itemCooling = mc.player.getItemCooldownManager().isCoolingDown(stack.getItem());
+				boolean silence = false;
+				try {
+					DivinityFeature div = (DivinityFeature) FeatureRegistry.getInstance().getFeature("divinity");
+					if (div != null && div.getDivineSilenceEffect() != null) {
+						silence = mc.player.hasStatusEffect(div.getDivineSilenceEffect());
+					}
+				} catch (Exception ignored) {}
+				boolean isTargetItem = false;
+				try {
+					isTargetItem =
+							stack.getItem() == com.tool.looseprince.register.FlyingRuneRegistrar.get() ||
+							stack.getItem() == com.tool.looseprince.register.FairDuelRegistrar.getItem() ||
+							stack.getItem() == com.tool.looseprince.register.DivinityRegistrar.getImperfectItem() ||
+							stack.getItem() == com.tool.looseprince.register.DivinityRegistrar.getCompleteItem() ||
+							stack.getItem() == com.tool.looseprince.register.DivinityRegistrar.getCreatorItem();
+				} catch (Exception ignored) {}
+
+				boolean useSilence = silence && isTargetItem;
+				if (itemCooling || useSilence) {
+					net.minecraft.text.Text reasonText = useSilence
+							? net.minecraft.text.Text.translatable("tooltip.looseprinces-tool.reason.silence")
+							: net.minecraft.text.Text.translatable("tooltip.looseprinces-tool.reason.cooldown");
+					lines.add(net.minecraft.text.Text.translatable(
+							"tooltip.looseprinces-tool.cooldown.reason",
+							reasonText
+					).formatted(net.minecraft.util.Formatting.GRAY));
+				}
+			} catch (Exception ignored) {}
+		});
+
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (creatorKey.wasPressed()) {
 				if (client.player == null) return;

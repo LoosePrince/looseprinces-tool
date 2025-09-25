@@ -57,5 +57,11 @@
   "advancements.looseprinces-tool.throne.title": "王座承认了你",
   "advancements.looseprinces-tool.throne.description": "登临神座，品味永恒的寂静。",
   "advancements.looseprinces-tool.above_sky.title": "高天之上",
-  "advancements.looseprinces-tool.above_sky.description": "觊觎本源，篡夺定义的权能"
+  "advancements.looseprinces-tool.above_sky.description": "觊觎本源，篡夺定义的权能",
+  "tooltip.looseprinces-tool.cooldown.reason": "此物品因为 %s 进入了冷却",
+  "tooltip.looseprinces-tool.reason.silence": "神力静默",
+  "tooltip.looseprinces-tool.reason.cooldown": "冷却中",
+  "tooltip.looseprinces-tool.disabled.reason": "此物品 %s，已被 禁用，%s 以解决",
+  "tooltip.looseprinces-tool.reason.not_owner": "不属于你",
+  "tooltip.looseprinces-tool.solution.return_or_drop": "归还原主或丢出"
 }

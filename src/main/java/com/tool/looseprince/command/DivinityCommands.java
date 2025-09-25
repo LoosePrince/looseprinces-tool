@@ -6,7 +6,6 @@ import com.tool.looseprince.feature.DivinityFeature;
 import com.tool.looseprince.feature.FeatureRegistry;
 import com.tool.looseprince.util.CreatorCooldownManager;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;

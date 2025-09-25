@@ -2,6 +2,10 @@ package com.tool.looseprince.impl;
 
 import com.tool.looseprince.LoosePrincesTool;
 import com.tool.looseprince.logic.DivinityLogic;
+import com.tool.looseprince.logic.CooldownKeys;
+import com.tool.looseprince.register.FlyingRuneRegistrar;
+import com.tool.looseprince.register.FairDuelRegistrar;
+import com.tool.looseprince.register.DivinityRegistrar;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -14,6 +18,13 @@ public final class DivinityService {
 
     public static void applyCooling(ServerPlayerEntity player, long nowTick) {
         try {
+            // 将飞行符文、公平对决、残缺/完整/造物主 设为玩家级冷却（与静默一致）
+            int remain = (int) Math.min(Integer.MAX_VALUE, com.tool.looseprince.util.CreatorCooldownManager.getInstance().getRemainingTicks(player.getUuid(), nowTick));
+            CooldownService.setPlayerCooldown(player, CooldownKeys.FLYING_RUNE, remain);
+            CooldownService.setPlayerCooldown(player, CooldownKeys.FAIR_DUEL, remain);
+            CooldownService.setPlayerCooldown(player, CooldownKeys.DIVINITY_IMPERFECT, remain);
+            CooldownService.setPlayerCooldown(player, CooldownKeys.DIVINITY_COMPLETE, remain);
+            CooldownService.setPlayerCooldown(player, CooldownKeys.DIVINITY_CREATOR, remain);
             // 清理相关效果
             if (DivinityLogic.creatorEffect() != null && player.hasStatusEffect(DivinityLogic.creatorEffect())) player.removeStatusEffect(DivinityLogic.creatorEffect());
             if (DivinityLogic.divinePowerEffect() != null && player.hasStatusEffect(DivinityLogic.divinePowerEffect())) player.removeStatusEffect(DivinityLogic.divinePowerEffect());
@@ -29,14 +40,35 @@ public final class DivinityService {
             }
             // 刷新神力静默
             if (DivinityLogic.silenceEffect() != null) {
-                long remain = com.tool.looseprince.util.CreatorCooldownManager.getInstance().getRemainingTicks(player.getUuid(), nowTick);
-                int dur = (int) Math.min(Integer.MAX_VALUE, remain);
+                int dur = (int) Math.min(Integer.MAX_VALUE, com.tool.looseprince.util.CreatorCooldownManager.getInstance().getRemainingTicks(player.getUuid(), nowTick));
                 if (dur > 0) {
                     player.addStatusEffect(new StatusEffectInstance(DivinityLogic.silenceEffect(), dur, 0, true, true, true));
                 }
             }
+
+            // 可视化遮罩：对相关物品设置物品冷却圈
+            try {
+                var mgr = player.getItemCooldownManager();
+                int maskTicks = getMaskTicks(nowTick, player);
+                if (maskTicks > 0) {
+                    if (FlyingRuneRegistrar.get() != null) mgr.set(FlyingRuneRegistrar.get(), maskTicks);
+                    if (FairDuelRegistrar.getItem() != null) mgr.set(FairDuelRegistrar.getItem(), maskTicks);
+                    if (DivinityRegistrar.getImperfectItem() != null) mgr.set(DivinityRegistrar.getImperfectItem(), maskTicks);
+                    if (DivinityRegistrar.getCompleteItem() != null) mgr.set(DivinityRegistrar.getCompleteItem(), maskTicks);
+                    if (DivinityRegistrar.getCreatorItem() != null) mgr.set(DivinityRegistrar.getCreatorItem(), maskTicks);
+                }
+            } catch (Exception ignored) {}
         } catch (Exception e) {
             LoosePrincesTool.LOGGER.error("[DivinityService] applyCooling error", e);
+        }
+    }
+
+    private static int getMaskTicks(long nowTick, ServerPlayerEntity player) {
+        try {
+            long remain = com.tool.looseprince.util.CreatorCooldownManager.getInstance().getRemainingTicks(player.getUuid(), nowTick);
+            return (int) Math.min(Integer.MAX_VALUE, Math.max(0, remain));
+        } catch (Exception e) {
+            return 0;
         }
     }
 

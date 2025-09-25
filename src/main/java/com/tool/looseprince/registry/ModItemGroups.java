@@ -5,6 +5,7 @@ import com.tool.looseprince.LoosePrincesTool;
 import com.tool.looseprince.register.FlyingRuneRegistrar;
 import com.tool.looseprince.register.FairDuelRegistrar;
 import com.tool.looseprince.register.DivinityRegistrar;
+import com.tool.looseprince.register.CodexRegistrar;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -38,6 +39,8 @@ public class ModItemGroups {
                             entries.add(DivinityRegistrar.getImperfectItem());
                             entries.add(DivinityRegistrar.getCompleteItem());
                             try { entries.add(DivinityRegistrar.getCreatorItem()); } catch (Exception ignored) {}
+                            try { entries.add(CodexRegistrar.getMysticTome()); } catch (Exception ignored) {}
+                            try { entries.add(CodexRegistrar.getUnknownManuscript()); } catch (Exception ignored) {}
                         })
                         .build()
         );

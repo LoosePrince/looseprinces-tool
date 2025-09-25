@@ -63,5 +63,13 @@
   "tooltip.looseprinces-tool.reason.cooldown": "冷却中",
   "tooltip.looseprinces-tool.disabled.reason": "此物品 %s，已被 禁用，%s 以解决",
   "tooltip.looseprinces-tool.reason.not_owner": "不属于你",
-  "tooltip.looseprinces-tool.solution.return_or_drop": "归还原主或丢出"
+  "tooltip.looseprinces-tool.solution.return_or_drop": "归还原主或丢出",
+  "item.looseprinces-tool.mystic_tome": "神秘典籍",
+  "item.looseprinces-tool.mystic_tome.divine_name": "神祇之书",
+  "item.looseprinces-tool.mystic_tome.desc": "一本会自动记录见闻的诡异典籍，你的每一次亵渎与登神都将被其铭记",
+  "item.looseprinces-tool.unknown_manuscript": "未知来源的手稿",
+  "item.looseprinces-tool.unknown_manuscript.desc": "残缺、破碎，却承载着难以辨识的神性字迹",
+  "screen.looseprinces-tool.codex.title": "神秘典籍",
+  "screen.looseprinces-tool.codex.catalog": "词条目录",
+  "screen.looseprinces-tool.codex.story": "这本看似普通的书籍却貌似感知神性的能力。无论你是在亵渎神明还是在攀登神座，它都在默默记录着你的每一步足迹。有人说这是某位陨落神明的日记，也有人认为这是造物主留给凡间的考验之书。但唯一确定的是，当你翻开它的那一刻，它就已经开始书写关于你的传说——无论这个传说最终是英雄史诗还是渎神悲剧。"
 }

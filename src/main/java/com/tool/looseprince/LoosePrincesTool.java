@@ -13,6 +13,7 @@ import com.tool.looseprince.feature.SoulBindingFeature;
 import com.tool.looseprince.feature.FairDuelFeature;
 import com.tool.looseprince.feature.DivinityFeature;
 import com.tool.looseprince.registry.ModItemGroups;
+import com.tool.looseprince.register.CodexRegistrar;
 import com.tool.looseprince.network.CreatorNetwork;
 import com.tool.looseprince.command.DivinityCommands;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -50,6 +51,9 @@ public class LoosePrincesTool implements ModInitializer {
 		// 注册创造模式分页
 		ModItemGroups.register();
 
+		// 注册神秘典籍与手稿
+		CodexRegistrar.register();
+
 		// 注册所有功能
 		registerFeatures();
 
@@ -58,6 +62,9 @@ public class LoosePrincesTool implements ModInitializer {
 
 		// 冷却tick
 		com.tool.looseprince.event.CooldownTickHandler.register();
+
+		// 典籍发放/持久化事件
+		com.tool.looseprince.event.CodexEventHandler.register();
 
 		// 注册服务器端网络处理
 		CreatorNetwork.registerServerReceiver();

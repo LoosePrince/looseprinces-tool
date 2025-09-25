@@ -26,6 +26,8 @@
   "item.looseprinces-tool.imperfect_divinity.story": "The fire-stealer shall be burned by flame. The divinity you seized through blasphemy, like shattered mirror fragments, forcibly reassembles within your soul.\nIt grants you an unbreakable body, yet makes you constantly taste the agony of divine rejection of mortal flesh.\nThis is no blessing, but a shackle.\nIt is your first step toward the immortal throne—a path of thorns, with no return.",
   "item.looseprinces-tool.complete_divinity.story": "Pain has ceased. Divinity and your soul have completed their final fusion.\nYou have healed the fractured godhead, which means you have utterly severed your mortality.\nHarm loses meaning before you. The sky bows in submission.\nYou have achieved immortality.Your life shall no longer be eroded by time; your power shall know no end. You stand equal with the divine. ",
   "item.looseprinces-tool.creator_divinity": "Creator's Divinity",
+  "item.looseprinces-tool.creator_divinity.mode.give": "Get",
+  "item.looseprinces-tool.creator_divinity.mode.take": "Take",
   "item.looseprinces-tool.creator_divinity.key": "Z",
   "item.looseprinces-tool.creator_divinity.normal.title": "You have gained the power to touch the loom of reality",
   "item.looseprinces-tool.creator_divinity.cooldown.title": "You reached for the thread that weaves reality",
@@ -61,5 +63,13 @@
   "tooltip.looseprinces-tool.reason.cooldown": "Cooldown",
   "tooltip.looseprinces-tool.disabled.reason": "This item is %s and has been disabled; %s to resolve",
   "tooltip.looseprinces-tool.reason.not_owner": "not yours",
-  "tooltip.looseprinces-tool.solution.return_or_drop": "return to owner or drop"
+  "tooltip.looseprinces-tool.solution.return_or_drop": "return to owner or drop",
+  "item.looseprinces-tool.mystic_tome": "Mystic Tome",
+  "item.looseprinces-tool.mystic_tome.divine_name": "Codex of Divinity",
+  "item.looseprinces-tool.mystic_tome.desc": "An eerie tome that records your blasphemies and ascensions.",
+  "item.looseprinces-tool.unknown_manuscript": "Manuscript of Unknown Origin",
+  "item.looseprinces-tool.unknown_manuscript.desc": "Tattered and faintly divine, its script defies recognition.",
+  "screen.looseprinces-tool.codex.title": "Mystic Tome",
+  "screen.looseprinces-tool.codex.catalog": "Entries",
+  "screen.looseprinces-tool.codex.story": "This seemingly ordinary book senses divinity. Whether you blaspheme against gods or climb toward the throne, it quietly records every step. Some say it is a fallen god's diary; others claim it's a trial left by the Creator. The only certainty is: the moment you open it, it begins to write your legend—be it a heroic epic or a tragedy of blasphemy."
 }

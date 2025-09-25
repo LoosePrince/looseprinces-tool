@@ -29,6 +29,7 @@ public final class FlightAbilityService {
 
             if (shouldAllowFlying && com.tool.looseprince.LoosePrincesTool.isOurAdvancementsLoaded()) {
                 grantAdvancement(player, "wings", "granted_by_code");
+                try { var st = com.tool.looseprince.state.CodexState.get(player); st.unlock("flying_rune"); st.save(player);} catch (Throwable ignored) {}
             }
         }
     }

@@ -45,8 +45,10 @@ public class DivinityEventHandler {
                     // 非冷却：优先造物主 > 完整神格 > 残缺神格
                     if (hasCreator && feature.getCreatorEffect() != null) {
                         DivinityService.applyCreator(player);
+                        try { var st = com.tool.looseprince.state.CodexState.get(player); st.unlock("divine_power"); st.unlock("complete_divinity"); st.save(player);} catch (Throwable ignored) {}
                     } else if (hasComplete && feature.getDivinePowerEffect() != null) {
                         DivinityService.applyDivinePower(player);
+                        try { var st = com.tool.looseprince.state.CodexState.get(player); st.unlock("divine_power"); st.unlock("complete_divinity"); st.save(player);} catch (Throwable ignored) {}
                     } else if (hasImperfect) {
                         DivinityService.applyImperfect(player);
                         // 不覆盖飞行状态（交由飞行符文或其他来源控制）

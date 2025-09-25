@@ -44,6 +44,12 @@ public final class SoulBindingUtils {
      */
     public static int getSoulBindingLevel(ItemStack stack) {
         try {
+            // 神秘典籍/神祇之书：天生视为灵魂绑定II
+            if (stack != null && stack.getItem() == com.tool.looseprince.register.CodexRegistrar.getMysticTome()) {
+                return 2;
+            }
+        } catch (Throwable ignored) {}
+        try {
             ItemEnchantmentsComponent comp = EnchantmentHelper.getEnchantments(stack);
             java.util.Set<RegistryEntry<Enchantment>> set = comp.getEnchantments();
             for (RegistryEntry<Enchantment> e : set) {

@@ -19,8 +19,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
  
 import com.tool.looseprince.network.payload.CreatorRequestPayload;
-import com.tool.looseprince.config.ConfigManager;
-import com.tool.looseprince.config.FeatureConfig;
 
 public class LoosePrincesToolClient implements ClientModInitializer {
 	@Override
@@ -184,12 +182,6 @@ public class LoosePrincesToolClient implements ClientModInitializer {
 			int y = this.height / 2 - 10;
 			input = new TextFieldWidget(this.textRenderer, x, y, w, 20, Text.literal("item id"));
 			addDrawableChild(input);
-			String key = net.minecraft.client.util.InputUtil.fromKeyCode(GLFW.GLFW_KEY_Z, 0).getTranslationKey();
-			FeatureConfig cfg = ConfigManager.getInstance().getFeatureConfig("divinity");
-			int seconds = cfg != null ? cfg.getIntOption("creatorCooldownSeconds", 900) : 900;
-			int amount = cfg != null ? cfg.getIntOption("creatorGiveAmount", 1) : 1;
-			String mode = amount >= 0 ? "item.looseprinces-tool.creator_divinity.mode.give" : "item.looseprinces-tool.creator_divinity.mode.take";
-			Text hint = Text.translatable("item.looseprinces-tool.creator_divinity.normal.detail", Text.translatable("item.looseprinces-tool.creator_divinity.key"), Text.translatable(mode), formatSecondsText(seconds));
 			addDrawableChild(ButtonWidget.builder(Text.translatable("screen.looseprinces-tool.creator.submit"), btn -> submit())
 					.dimensions(x, y + 30, 200, 20).build());
 		}
@@ -202,17 +194,5 @@ public class LoosePrincesToolClient implements ClientModInitializer {
 			ClientPlayNetworking.send(new CreatorRequestPayload(id));
 			client.setScreen(null);
 		}
-	}
-
-	private static Text formatSecondsText(int totalSeconds) {
-		int s = Math.max(0, totalSeconds);
-		int h = s / 3600; s %= 3600;
-		int m = s / 60; s %= 60;
-		StringBuilder sb = new StringBuilder();
-		if (h > 0) sb.append(h).append("小时");
-		if (m > 0) sb.append(m).append("分钟");
-		if (h == 0 && s > 0) sb.append(s).append("秒");
-		if (sb.length() == 0) sb.append("0秒");
-		return Text.literal(sb.toString());
 	}
 }

@@ -1,6 +1,6 @@
 package com.tool.looseprince.mixin;
 
-import com.tool.looseprince.util.SoulBindingUtils;
+import com.tool.looseprince.impl.SoulBindingService;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -23,16 +23,7 @@ public abstract class SlotSoulBindingMixin {
         if (serverPlayer.getAbilities() != null && serverPlayer.getAbilities().creativeMode) return; // 创造模式不拦截
         Slot self = (Slot) (Object) this;
         ItemStack stack = self.getStack();
-        if (stack == null || stack.isEmpty()) return;
-        if (!SoulBindingUtils.hasSoulBinding(stack)) return;
-
-        // 写入拥有者（若缺少）
-        if (!SoulBindingUtils.hasOwner(stack)) {
-            SoulBindingUtils.ensureOwner(stack, serverPlayer);
-            return;
-        }
-
-        if (!SoulBindingUtils.isOwner(serverPlayer, stack)) {
+        if (SoulBindingService.shouldPreventContainerTake(serverPlayer, stack)) {
             cir.setReturnValue(false);
             cir.cancel();
         }

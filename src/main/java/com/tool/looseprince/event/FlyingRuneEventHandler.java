@@ -1,27 +1,18 @@
 package com.tool.looseprince.event;
 
 import com.tool.looseprince.LoosePrincesTool;
-import com.tool.looseprince.feature.FlyingRuneFeature;
-import com.tool.looseprince.feature.DivinityFeature;
-import com.tool.looseprince.feature.FeatureRegistry;
-import com.tool.looseprince.item.FlyingRuneItem;
+import com.tool.looseprince.logic.FlightDecision;
+import com.tool.looseprince.logic.FlightLogic;
+import com.tool.looseprince.impl.FlightAbilityService;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.util.Identifier;
 
 /**
  * 飞行符文事件处理器
  * 处理玩家飞行能力的检测和应用
  */
 public class FlyingRuneEventHandler {
-    private final FlyingRuneFeature feature;
-    
-    public FlyingRuneEventHandler(FlyingRuneFeature feature) {
-        this.feature = feature;
-    }
+    public FlyingRuneEventHandler() {}
     
     /**
      * 注册事件监听器
@@ -44,122 +35,15 @@ public class FlyingRuneEventHandler {
      */
     private void updatePlayerFlightAbility(ServerPlayerEntity player) {
         try {
-            // 检查功能是否启用
-            if (!feature.isEnabled()) {
-                return;
-            }
-            
-            // 检查玩家是否在创造模式或观察者模式
-            if (player.isCreative() || player.isSpectator()) {
-                return; // 创造模式和观察者模式本身就有飞行能力，不需要处理
-            }
-            
-            // 检查当前维度是否允许使用飞行符文
-            String dimensionId = player.getWorld().getRegistryKey().getValue().toString();
-            if (!feature.isAllowedInDimension(dimensionId)) {
-                // 如果当前维度不允许使用，移除飞行能力
-                if (player.getAbilities().allowFlying) {
-                    player.getAbilities().allowFlying = false;
-                    player.getAbilities().flying = false;
-                    player.sendAbilitiesUpdate();
-                }
-                return;
-            }
-            
-            // 冷却期间禁止飞行
-            long nowTick = player.getServerWorld().getTime();
-            boolean creatorCooling = false;
-            try {
-                creatorCooling = com.tool.looseprince.util.CreatorCooldownManager.getInstance()
-                        .isCoolingDown(player.getUuid(), nowTick);
-            } catch (Exception ignored) {}
-
-            // 检查背包中是否有飞行符文
-            boolean hasFlyingRune = hasRuneInInventory(player);
-            
-            // 检查是否有完整神格的神力效果 或 造物主效果
-            boolean hasGodLikePower = false;
-            try {
-                DivinityFeature divFeature = (DivinityFeature) FeatureRegistry.getInstance().getFeature("divinity");
-                if (divFeature != null) {
-                    boolean god = divFeature.getDivinePowerEffect() != null && player.hasStatusEffect(divFeature.getDivinePowerEffect());
-                    boolean creator = divFeature.getCreatorEffect() != null && player.hasStatusEffect(divFeature.getCreatorEffect());
-                    hasGodLikePower = god || creator;
-                }
-            } catch (Exception ignored) {}
-            
-            // 更新飞行能力：有飞行符文或有神力/造物主效果都可以飞行（冷却期禁飞）
-            boolean shouldAllowFlying = (hasFlyingRune || hasGodLikePower) && !creatorCooling;
-            
-            if (player.getAbilities().allowFlying != shouldAllowFlying) {
-                player.getAbilities().allowFlying = shouldAllowFlying;
-                
-                // 如果不再允许飞行且玩家正在飞行，停止飞行
-                if (!shouldAllowFlying && player.getAbilities().flying) {
-                    player.getAbilities().flying = false;
-                    
-                    // 如果配置了防止摔落伤害，给玩家一个缓慢下降的效果
-                    if (feature.shouldPreventFallDamage()) {
-                        // 重置摔落距离以防止摔落伤害
-                        player.fallDistance = 0.0f;
-                    }
-                }
-                
-                // 同步能力到客户端
-                player.sendAbilitiesUpdate();
-                // 成就：亵渎者的羽翼（持有符文或生存飞行即可）
-                if (shouldAllowFlying && com.tool.looseprince.LoosePrincesTool.isOurAdvancementsLoaded()) {
-                    grantAdvancementCriterion(player, "wings", "granted_by_code");
-                }
-            }
+            // 使用逻辑层进行判定
+            FlightDecision decision = FlightLogic.evaluate(player);
+            // 使用实现层应用效果
+            FlightAbilityService.apply(player, decision);
             
         } catch (Exception e) {
             LoosePrincesTool.LOGGER.error("Error updating flight ability for player {}", player.getName().getString(), e);
         }
     }
     
-    /**
-     * 检查玩家背包中是否有飞行符文
-     * @param player 玩家实体
-     * @return 如果有飞行符文返回true，否则返回false
-     */
-    private boolean hasRuneInInventory(PlayerEntity player) {
-        if (feature.getFlyingRune() == null) {
-            return false;
-        }
-        
-        // 检查背包中的所有物品
-        for (int i = 0; i < player.getInventory().size(); i++) {
-            ItemStack stack = player.getInventory().getStack(i);
-            if (!stack.isEmpty() && stack.getItem() instanceof FlyingRuneItem) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
     
-    /**
-     * 检查物品是否为飞行符文
-     * @param stack 物品堆叠
-     * @return 如果是飞行符文返回true，否则返回false
-     */
-    private boolean isFlyingRune(ItemStack stack) {
-        return !stack.isEmpty() && stack.getItem() == feature.getFlyingRune();
-    }
-
-    private void grantAdvancementCriterion(ServerPlayerEntity player, String path, String criterion) {
-        try {
-            Identifier id = Identifier.of(LoosePrincesTool.MOD_ID, path);
-            AdvancementEntry adv = player.getServer().getAdvancementLoader().get(id);
-            if (adv != null) {
-                boolean granted = player.getAdvancementTracker().grantCriterion(adv, criterion);
-                LoosePrincesTool.LOGGER.info("[Adv] grant {}:{} -> {} => {}", id.getNamespace(), id.getPath(), criterion, granted);
-            } else {
-                LoosePrincesTool.LOGGER.warn("[Adv] missing advancement {}", id);
-            }
-        } catch (Exception e) {
-            LoosePrincesTool.LOGGER.error("[Adv] grant error", e);
-        }
-    }
 }

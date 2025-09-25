@@ -3,13 +3,9 @@ package com.tool.looseprince.feature;
 import com.tool.looseprince.config.ConfigManager;
 import com.tool.looseprince.config.FeatureConfig;
 import com.tool.looseprince.LoosePrincesTool;
-import com.tool.looseprince.item.FlyingRuneItem;
 import com.tool.looseprince.event.FlyingRuneEventHandler;
+import com.tool.looseprince.register.FlyingRuneRegistrar;
 import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Rarity;
 
 /**
  * 飞行符文功能
@@ -20,12 +16,7 @@ public class FlyingRuneFeature implements Feature {
     private static final String DISPLAY_NAME = "飞行符文";
     private static final String DESCRIPTION = "持有时可以在生存模式下飞行的神奇符文";
     
-    // 飞行符文物品
-    private Item flyingRune;
-    
-    // 静态字段用于ItemGroup注册
-    private static Item staticFlyingRune;
-    
+    // 仅用于兼容旧引用：不再在此类中持有物品实例
     // 事件处理器
     private FlyingRuneEventHandler eventHandler;
     
@@ -53,8 +44,8 @@ public class FlyingRuneFeature implements Feature {
         
         LoosePrincesTool.LOGGER.info("初始化飞行符文功能");
         
-        // 注册飞行符文物品
-        registerFlyingRune();
+        // 注册飞行符文物品（注册层）
+        FlyingRuneRegistrar.register();
         
         // 注册事件监听器
         registerEventListeners();
@@ -81,47 +72,11 @@ public class FlyingRuneFeature implements Feature {
     }
     
     /**
-     * 注册飞行符文物品
-     */
-    private void registerFlyingRune() {
-        try {
-            // 创建物品设置
-            Item.Settings settings = new Item.Settings()
-                    .maxCount(1)                    // 最大堆叠数为1
-                    .rarity(Rarity.EPIC);           // 史诗稀有度（紫色）
-            
-            // 创建飞行符文物品
-            flyingRune = new FlyingRuneItem(settings);
-            staticFlyingRune = flyingRune;
-            
-            // 注册物品到游戏注册表
-            Registry.register(
-                    Registries.ITEM,
-                    Identifier.of("looseprinces-tool", "flying_rune"),
-                    flyingRune
-            );
-            
-            LoosePrincesTool.LOGGER.info("飞行符文物品注册成功");
-            
-        } catch (Exception e) {
-            LoosePrincesTool.LOGGER.error("注册飞行符文物品失败", e);
-        }
-    }
-    
-    /**
      * 注册事件监听器
      */
     private void registerEventListeners() {
-        eventHandler = new FlyingRuneEventHandler(this);
+        eventHandler = new FlyingRuneEventHandler();
         eventHandler.registerEvents();
-    }
-    
-    /**
-     * 获取飞行符文物品
-     * @return 飞行符文物品实例
-     */
-    public Item getFlyingRune() {
-        return flyingRune;
     }
     
     /**
@@ -129,7 +84,7 @@ public class FlyingRuneFeature implements Feature {
      * @return 已注册的飞行符文物品实例
      */
     public static Item getStaticFlyingRune() {
-        return staticFlyingRune;
+        return com.tool.looseprince.register.FlyingRuneRegistrar.get();
     }
     
     /**

@@ -2,20 +2,13 @@ package com.tool.looseprince.event;
 
 import com.tool.looseprince.LoosePrincesTool;
 import com.tool.looseprince.feature.DivinityFeature;
-import com.tool.looseprince.feature.FairDuelFeature;
-import com.tool.looseprince.feature.FeatureRegistry;
-import com.tool.looseprince.item.CompleteDivinityItem;
-import com.tool.looseprince.item.ImperfectDivinityItem;
-import com.tool.looseprince.item.CreatorDivinityItem;
-import com.tool.looseprince.util.CreatorCooldownManager;
+import com.tool.looseprince.impl.DivinityService;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+ 
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.util.Identifier;
+ 
 
 /**
  * 神格事件处理：
@@ -37,106 +30,25 @@ public class DivinityEventHandler {
             }
             try {
                 for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-                    boolean hasImperfect = hasImperfect(player);
-                    boolean hasComplete = hasComplete(player);
-                    boolean hasCreator = hasCreator(player);
+                    boolean hasImperfect = com.tool.looseprince.logic.DivinityLogic.hasImperfectItem(player);
+                    boolean hasComplete = com.tool.looseprince.logic.DivinityLogic.hasCompleteItem(player);
+                    boolean hasCreator = com.tool.looseprince.logic.DivinityLogic.hasCreatorItem(player);
 
-                    boolean cooling = CreatorCooldownManager.getInstance().isCoolingDown(player.getUuid(), time);
-
-                    // 取公平对决效果引用
-                    FairDuelFeature fair = (FairDuelFeature) FeatureRegistry.getInstance().getFeature("fair_duel");
+                    boolean cooling = com.tool.looseprince.logic.DivinityLogic.isCooling(player, time);
 
                     // 冷却期：剥夺相关效果并禁止飞行，同时维持神力静默计时
                     if (cooling) {
-                        // 移除所有相关效果
-                        if (feature.getCreatorEffect() != null && player.hasStatusEffect(feature.getCreatorEffect())) {
-                            player.removeStatusEffect(feature.getCreatorEffect());
-                        }
-                        if (feature.getDivinePowerEffect() != null && player.hasStatusEffect(feature.getDivinePowerEffect())) {
-                            player.removeStatusEffect(feature.getDivinePowerEffect());
-                        }
-                        if (feature.getImperfectDivinityEffect() != null && player.hasStatusEffect(feature.getImperfectDivinityEffect())) {
-                            player.removeStatusEffect(feature.getImperfectDivinityEffect());
-                        }
-                        if (fair != null && fair.getFairDuelEffect() != null && player.hasStatusEffect(fair.getFairDuelEffect())) {
-                            player.removeStatusEffect(fair.getFairDuelEffect());
-                        }
-                        // 禁止飞行
-                        if (!player.isCreative() && !player.isSpectator()) {
-                            if (player.getAbilities().allowFlying) {
-                                player.getAbilities().allowFlying = false;
-                                player.getAbilities().flying = false;
-                                player.sendAbilitiesUpdate();
-                            }
-                        }
-                        // 刷新神力静默效果时长（与剩余冷却同步）
-                        if (feature.getDivineSilenceEffect() != null) {
-                            long remain = CreatorCooldownManager.getInstance().getRemainingTicks(player.getUuid(), time);
-                            int dur = (int) Math.min(Integer.MAX_VALUE, remain);
-                            if (dur > 0) {
-                                player.addStatusEffect(new StatusEffectInstance(feature.getDivineSilenceEffect(), dur, 0, true, true, true));
-                            }
-                        }
+                        DivinityService.applyCooling(player, time);
                         continue;
                     }
 
                     // 非冷却：优先造物主 > 完整神格 > 残缺神格
                     if (hasCreator && feature.getCreatorEffect() != null) {
-                        // 获得造物主效果（包含神的力量含义），并清理其他冲突
-                        player.addStatusEffect(new StatusEffectInstance(feature.getCreatorEffect(), 30, 0, true, true, true));
-                        if (com.tool.looseprince.LoosePrincesTool.isOurAdvancementsLoaded()) {
-                            grantAdvancementCriterion(player, "above_sky", "granted_by_code");
-                        }
-                        if (feature.getDivinePowerEffect() != null && player.hasStatusEffect(feature.getDivinePowerEffect())) {
-                            player.removeStatusEffect(feature.getDivinePowerEffect());
-                        }
-                        if (feature.getImperfectDivinityEffect() != null && player.hasStatusEffect(feature.getImperfectDivinityEffect())) {
-                            player.removeStatusEffect(feature.getImperfectDivinityEffect());
-                        }
-                        if (fair != null && fair.getFairDuelEffect() != null && player.hasStatusEffect(fair.getFairDuelEffect())) {
-                            player.removeStatusEffect(fair.getFairDuelEffect());
-                        }
-                        // 飞行允许
-                        if (!player.isCreative() && !player.isSpectator()) {
-                            if (!player.getAbilities().allowFlying) {
-                                player.getAbilities().allowFlying = true;
-                                player.sendAbilitiesUpdate();
-                            }
-                        }
-                        // 非冷却状态下，若仍带有神力静默，则移除
-                        if (feature.getDivineSilenceEffect() != null && player.hasStatusEffect(feature.getDivineSilenceEffect())) {
-                            player.removeStatusEffect(feature.getDivineSilenceEffect());
-                        }
+                        DivinityService.applyCreator(player);
                     } else if (hasComplete && feature.getDivinePowerEffect() != null) {
-                        // 神的力量（无敌），并清理公平对决效果
-                        player.addStatusEffect(new StatusEffectInstance(feature.getDivinePowerEffect(), 30, 0, true, true, true));
-                        // 进度：王座承认了你
-                        if (com.tool.looseprince.LoosePrincesTool.isOurAdvancementsLoaded()) {
-                            grantAdvancementCriterion(player, "throne", "granted_by_code");
-                        }
-                        if (fair != null && fair.getFairDuelEffect() != null && player.hasStatusEffect(fair.getFairDuelEffect())) {
-                            player.removeStatusEffect(fair.getFairDuelEffect());
-                        }
-                        // 飞行：仅在拥有完整神格时强制开启
-                        if (!player.isCreative() && !player.isSpectator()) {
-                            if (!player.getAbilities().allowFlying) {
-                                player.getAbilities().allowFlying = true;
-                                player.sendAbilitiesUpdate();
-                            }
-                        }
-                        // 非冷却状态下，若仍带有神力静默，则移除
-                        if (feature.getDivineSilenceEffect() != null && player.hasStatusEffect(feature.getDivineSilenceEffect())) {
-                            player.removeStatusEffect(feature.getDivineSilenceEffect());
-                        }
+                        DivinityService.applyDivinePower(player);
                     } else if (hasImperfect) {
-                        // 残缺的神格：仅赋予自定义状态效果，该效果内部包含抗性提升V和公平对决功能
-                        if (feature.getImperfectDivinityEffect() != null) {
-                            player.addStatusEffect(new StatusEffectInstance(feature.getImperfectDivinityEffect(), 30, 0, true, true, true));
-                            // 进度：窃火者的荆棘冠
-                            if (com.tool.looseprince.LoosePrincesTool.isOurAdvancementsLoaded()) {
-                                grantAdvancementCriterion(player, "thorn_crown", "granted_by_code");
-                            }
-                        }
+                        DivinityService.applyImperfect(player);
                         // 不覆盖飞行状态（交由飞行符文或其他来源控制）
                     } else {
                         // 既没有完整神格也没有残缺神格：不要覆盖飞行状态，交由其他功能处理
@@ -154,26 +66,24 @@ public class DivinityEventHandler {
                 return;
             }
             try {
-                FairDuelFeature fair = (FairDuelFeature) FeatureRegistry.getInstance().getFeature("fair_duel");
+                var fairEffect = com.tool.looseprince.logic.DivinityLogic.fairDuelEffect();
                 for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
                     // 检查是否有"残缺的神格"状态效果
-                    if (feature.getImperfectDivinityEffect() != null && player.hasStatusEffect(feature.getImperfectDivinityEffect())) {
+                    if (com.tool.looseprince.logic.DivinityLogic.imperfectEffect() != null && player.hasStatusEffect(com.tool.looseprince.logic.DivinityLogic.imperfectEffect())) {
                         // 抗性提升V（amplifier 4）
                         player.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 30, 4, true, true, true));
                         // 公平对决效果（若拥有造物主或神的力量，则不赋予）
-                        if (fair != null && fair.getFairDuelEffect() != null) {
+                        if (fairEffect != null) {
                             boolean blockFair = false;
                             try {
-                                boolean creatorActive = feature.getCreatorEffect() != null && player.hasStatusEffect(feature.getCreatorEffect());
-                                boolean divinePowerActive = feature.getDivinePowerEffect() != null && player.hasStatusEffect(feature.getDivinePowerEffect());
-                                blockFair = creatorActive || divinePowerActive;
+                                blockFair = com.tool.looseprince.logic.DivinityLogic.shouldBlockFairDuel(player);
                             } catch (Exception ignored) {}
                             if (!blockFair) {
-                                player.addStatusEffect(new StatusEffectInstance(fair.getFairDuelEffect(), 30, 0, true, true, true));
+                                player.addStatusEffect(new StatusEffectInstance(fairEffect, 30, 0, true, true, true));
                             } else {
                                 // 若已有则移除，确保“不会因为公平对决或残缺神格获得”
-                                if (player.hasStatusEffect(fair.getFairDuelEffect())) {
-                                    player.removeStatusEffect(fair.getFairDuelEffect());
+                                if (player.hasStatusEffect(fairEffect)) {
+                                    player.removeStatusEffect(fairEffect);
                                 }
                             }
                         }
@@ -185,77 +95,9 @@ public class DivinityEventHandler {
         });
     }
 
-    private void grantAdvancementCriterion(ServerPlayerEntity player, String path, String criterion) {
-        try {
-            Identifier id = Identifier.of(LoosePrincesTool.MOD_ID, path);
-            AdvancementEntry adv = player.getServer().getAdvancementLoader().get(id);
-            if (adv != null) {
-                boolean granted = player.getAdvancementTracker().grantCriterion(adv, criterion);
-                LoosePrincesTool.LOGGER.info("[Adv] grant {}:{} -> {} => {}", id.getNamespace(), id.getPath(), criterion, granted);
-            } else {
-                LoosePrincesTool.LOGGER.warn("[Adv] missing advancement {}", id);
-            }
-        } catch (Exception e) {
-            LoosePrincesTool.LOGGER.error("[Adv] grant error", e);
-        }
-    }
+    // 成就授予由实现层处理
 
-    private boolean hasImperfect(PlayerEntity player) {
-        for (int i = 0; i < player.getInventory().size(); i++) {
-            ItemStack stack = player.getInventory().getStack(i);
-            if (!stack.isEmpty() && stack.getItem() instanceof ImperfectDivinityItem) {
-                return true;
-            }
-        }
-        if (!player.getOffHandStack().isEmpty() && player.getOffHandStack().getItem() instanceof ImperfectDivinityItem) {
-            return true;
-        }
-        for (int i = 0; i < player.getInventory().armor.size(); i++) {
-            ItemStack armorStack = player.getInventory().armor.get(i);
-            if (!armorStack.isEmpty() && armorStack.getItem() instanceof ImperfectDivinityItem) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean hasComplete(PlayerEntity player) {
-        for (int i = 0; i < player.getInventory().size(); i++) {
-            ItemStack stack = player.getInventory().getStack(i);
-            if (!stack.isEmpty() && stack.getItem() instanceof CompleteDivinityItem) {
-                return true;
-            }
-        }
-        if (!player.getOffHandStack().isEmpty() && player.getOffHandStack().getItem() instanceof CompleteDivinityItem) {
-            return true;
-        }
-        for (int i = 0; i < player.getInventory().armor.size(); i++) {
-            ItemStack armorStack = player.getInventory().armor.get(i);
-            if (!armorStack.isEmpty() && armorStack.getItem() instanceof CompleteDivinityItem) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean hasCreator(PlayerEntity player) {
-        for (int i = 0; i < player.getInventory().size(); i++) {
-            ItemStack stack = player.getInventory().getStack(i);
-            if (!stack.isEmpty() && stack.getItem() instanceof CreatorDivinityItem) {
-                return true;
-            }
-        }
-        if (!player.getOffHandStack().isEmpty() && player.getOffHandStack().getItem() instanceof CreatorDivinityItem) {
-            return true;
-        }
-        for (int i = 0; i < player.getInventory().armor.size(); i++) {
-            ItemStack armorStack = player.getInventory().armor.get(i);
-            if (!armorStack.isEmpty() && armorStack.getItem() instanceof CreatorDivinityItem) {
-                return true;
-            }
-        }
-        return false;
-    }
+    // 物品判定挪至 DivinityLogic
 }
 
 

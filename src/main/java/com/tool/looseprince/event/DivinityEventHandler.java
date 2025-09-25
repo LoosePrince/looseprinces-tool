@@ -51,6 +51,7 @@ public class DivinityEventHandler {
                         try { var st = com.tool.looseprince.state.CodexState.get(player); st.unlock("divine_power"); st.unlock("complete_divinity"); st.save(player);} catch (Throwable ignored) {}
                     } else if (hasImperfect) {
                         DivinityService.applyImperfect(player);
+                        try { var st = com.tool.looseprince.state.CodexState.get(player); st.unlock("imperfect_divinity"); st.save(player);} catch (Throwable ignored) {}
                         // 不覆盖飞行状态（交由飞行符文或其他来源控制）
                     } else {
                         // 既没有完整神格也没有残缺神格：不要覆盖飞行状态，交由其他功能处理

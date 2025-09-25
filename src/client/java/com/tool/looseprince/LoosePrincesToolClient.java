@@ -69,7 +69,7 @@ public class LoosePrincesToolClient implements ClientModInitializer {
 					lines.add(insertIndex++, Text.translatable("item.looseprinces-tool.creator_divinity.normal.detail",
 						Text.translatable("item.looseprinces-tool.creator_divinity.key"),
 						Text.translatable(modeKey),
-						Text.literal(String.valueOf(seconds))
+						Text.translatable("%s", Text.literal(String.valueOf(seconds)))
 					).formatted(net.minecraft.util.Formatting.GRAY));
 					lines.add(insertIndex++, Text.empty());
 					for (String ln : net.minecraft.text.Text.translatable("item.looseprinces-tool.creator_divinity.story.normal").getString().split("\n")) {
@@ -80,7 +80,7 @@ public class LoosePrincesToolClient implements ClientModInitializer {
 					lines.add(insertIndex++, Text.translatable("item.looseprinces-tool.creator_divinity.cooldown.detail",
 						Text.translatable("item.looseprinces-tool.creator_divinity.key"),
 						Text.translatable(modeKey),
-						Text.literal(String.valueOf(seconds))
+						Text.translatable("%s", Text.literal(String.valueOf(seconds)))
 					).formatted(net.minecraft.util.Formatting.GRAY));
 					lines.add(insertIndex++, Text.empty());
 					String lineKey = amount >= 0 ? "item.looseprinces-tool.creator_divinity.story.cooldown_line.give" : "item.looseprinces-tool.creator_divinity.story.cooldown_line.take";

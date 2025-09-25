@@ -8,6 +8,7 @@ import java.util.Set;
 public class CodexPlayerState {
     public boolean givenOnce;
     public final Set<String> unlocked = new HashSet<>();
+    public final Set<String> read = new HashSet<>();
 
     public NbtCompound toNbt() {
         NbtCompound nbt = new NbtCompound();
@@ -16,6 +17,11 @@ public class CodexPlayerState {
             StringBuilder sb = new StringBuilder();
             for (String s : unlocked) { if (sb.length() > 0) sb.append(','); sb.append(s); }
             nbt.putString("entries", sb.toString());
+        }
+        if (!read.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (String s : read) { if (sb.length() > 0) sb.append(','); sb.append(s); }
+            nbt.putString("read", sb.toString());
         }
         return nbt;
     }
@@ -27,6 +33,12 @@ public class CodexPlayerState {
             String csv = nbt.getString("entries");
             if (csv != null && !csv.isEmpty()) {
                 for (String s : csv.split(",")) if (!s.isEmpty()) st.unlocked.add(s);
+            }
+        }
+        if (nbt.contains("read")) {
+            String csv = nbt.getString("read");
+            if (csv != null && !csv.isEmpty()) {
+                for (String s : csv.split(",")) if (!s.isEmpty()) st.read.add(s);
             }
         }
         return st;

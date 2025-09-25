@@ -67,9 +67,13 @@
   "item.looseprinces-tool.mystic_tome": "Mystic Tome",
   "item.looseprinces-tool.mystic_tome.divine_name": "Codex of Divinity",
   "item.looseprinces-tool.mystic_tome.desc": "An eerie tome that records your blasphemies and ascensions.",
+  "tooltip.looseprinces-tool.story.unread": "You have not explored its story yet...",
   "item.looseprinces-tool.unknown_manuscript": "Manuscript of Unknown Origin",
   "item.looseprinces-tool.unknown_manuscript.desc": "Tattered and faintly divine, its script defies recognition.",
   "screen.looseprinces-tool.codex.title": "Mystic Tome",
   "screen.looseprinces-tool.codex.catalog": "Entries",
+  "screen.looseprinces-tool.codex.type.item": "[Item]",
+  "screen.looseprinces-tool.codex.type.potion": "[Potion]",
+  "screen.looseprinces-tool.codex.type.effect": "[Effect]",
   "screen.looseprinces-tool.codex.story": "This seemingly ordinary book senses divinity. Whether you blaspheme against gods or climb toward the throne, it quietly records every step. Some say it is a fallen god's diary; others claim it's a trial left by the Creator. The only certainty is: the moment you open it, it begins to write your legend—be it a heroic epic or a tragedy of blasphemy."
 }

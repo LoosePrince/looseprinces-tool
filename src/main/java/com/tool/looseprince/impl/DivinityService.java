@@ -88,9 +88,18 @@ public final class DivinityService {
                     player.sendAbilitiesUpdate();
                 }
             }
-            // 清理静默
+            // 清理静默，并移除所有冷却圈/禁用遮罩
             if (DivinityLogic.silenceEffect() != null && player.hasStatusEffect(DivinityLogic.silenceEffect())) player.removeStatusEffect(DivinityLogic.silenceEffect());
+            try {
+                var mgr = player.getItemCooldownManager();
+                if (FlyingRuneRegistrar.get() != null) mgr.remove(FlyingRuneRegistrar.get());
+                if (FairDuelRegistrar.getItem() != null) mgr.remove(FairDuelRegistrar.getItem());
+                if (DivinityRegistrar.getImperfectItem() != null) mgr.remove(DivinityRegistrar.getImperfectItem());
+                if (DivinityRegistrar.getCompleteItem() != null) mgr.remove(DivinityRegistrar.getCompleteItem());
+                if (DivinityRegistrar.getCreatorItem() != null) mgr.remove(DivinityRegistrar.getCreatorItem());
+            } catch (Throwable ignored) {}
             grant(player, "above_sky");
+            try { var st = com.tool.looseprince.state.CodexState.get(player); st.unlock("creator"); st.unlock("creator_divinity"); st.save(player);} catch (Throwable ignored) {}
         } catch (Exception e) {
             LoosePrincesTool.LOGGER.error("[DivinityService] applyCreator error", e);
         }

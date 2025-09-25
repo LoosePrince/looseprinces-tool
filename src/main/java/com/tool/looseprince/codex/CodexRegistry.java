@@ -22,9 +22,10 @@ public final class CodexRegistry {
     public static CodexEntry get(String id) { return ENTRIES.get(id); }
     public static Map<String, CodexEntry> all() { return Collections.unmodifiableMap(ENTRIES); }
 
-    public static CodexEntry simple(String id, java.util.function.Supplier<ItemStack> icon, String titleKey, String... contentKeys) {
+    public static CodexEntry simple(String id, CodexEntryType type, java.util.function.Supplier<ItemStack> icon, String titleKey, String... contentKeys) {
         return new CodexEntry(
                 id,
+                type,
                 icon,
                 () -> Text.translatable(titleKey),
                 () -> {

@@ -13,6 +13,8 @@ public final class CodexState {
     public java.util.Set<String> getUnlockedEntries() { return getInternal().unlocked; }
     public void unlock(String id) { if (id != null && !id.isEmpty()) getInternal().unlocked.add(id); }
     public boolean isUnlocked(String id) { return id != null && getInternal().unlocked.contains(id); }
+    public boolean isRead(String id) { return id != null && getInternal().read.contains(id); }
+    public void markRead(String id) { if (id != null && !id.isEmpty()) getInternal().read.add(id); }
 
     private CodexPlayerState delegate;
     private CodexPlayerState getInternal() {

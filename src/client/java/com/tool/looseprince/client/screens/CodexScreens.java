@@ -72,13 +72,48 @@ public final class CodexScreens {
             int start = Math.max(0, this.listScroll / this.itemH);
             int end = Math.min(categories.size(), start + visible + 1);
             int y = this.listY - (this.listScroll % this.itemH);
-            for (int i = start; i < end; i++) {
-                int bg = i == selectedIndex ? 0x5500AAFF : 0x55000000;
-                context.fill(this.listX, y, this.listX + this.listW, y + this.itemH - 2, bg);
+			for (int i = start; i < end; i++) {
+				int bg = i == selectedIndex ? 0x5500AAFF : 0x55000000;
+				context.fill(this.listX, y, this.listX + this.listW, y + this.itemH - 2, bg);
                 Text label = categories.get(i);
-                context.drawText(this.textRenderer, label, this.listX + 6, y + 6, 0xE0E0E0, false);
-                y += this.itemH;
-            }
+				String id = i < categoryIds.size() ? categoryIds.get(i) : null;
+				int tx = this.listX + 6;
+				if (id != null) {
+					var entry = com.tool.looseprince.codex.CodexRegistry.get(id);
+					if (entry != null) {
+						var icon = entry.getIcon();
+						if (icon != null && !icon.isEmpty()) {
+							context.drawItem(icon, this.listX + 6, y + 3);
+							tx = this.listX + 6 + 18 + 4;
+						}
+                        // 右侧类型标识
+						com.tool.looseprince.codex.CodexEntryType tp = entry.getType();
+						if (tp != null) {
+							Text chip = switch (tp) {
+								case ITEM -> Text.translatable("screen.looseprinces-tool.codex.type.item");
+								case POTION -> Text.translatable("screen.looseprinces-tool.codex.type.potion");
+								case EFFECT -> Text.translatable("screen.looseprinces-tool.codex.type.effect");
+							};
+							int chipW = this.textRenderer.getWidth(chip);
+							context.drawText(this.textRenderer, chip, this.listX + this.listW - chipW - 6, y + 6, 0x9E9E9E, false);
+						}
+                        // 未阅读标记：右上角白点
+                        try {
+                            MinecraftClient mc = MinecraftClient.getInstance();
+                            if (mc != null && mc.player != null && mc.getServer() != null) {
+                                var st = com.tool.looseprince.state.CodexState.get(mc.getServer().getPlayerManager().getPlayer(mc.player.getUuid()));
+                                if (!st.isRead(id)) {
+                                    int cx = this.listX + this.listW - 8;
+                                    int cy = y + 4;
+                                    context.fill(cx, cy, cx + 4, cy + 4, 0xFFFFFFFF);
+                                }
+                            }
+                        } catch (Throwable ignored) {}
+					}
+				}
+				context.drawText(this.textRenderer, label, tx, y + 6, 0xE0E0E0, false);
+				y += this.itemH;
+			}
             // right content
             if (this.content != null) this.content.render(context, mouseX, mouseY, delta);
             // title
@@ -141,7 +176,60 @@ public final class CodexScreens {
             var entry = com.tool.looseprince.codex.CodexRegistry.get(id);
             if (entry != null) {
                 lines.add(entry.getTitle().getString());
-                lines.addAll(entry.getContentLines());
+                java.util.function.Function<String, String> fmt = (s) -> s;
+                boolean appendCreatorCooldownAfter = false;
+                java.util.List<String> creatorCooldownLines = java.util.Collections.emptyList();
+                if ("creator_divinity".equals(id)) {
+                    // 渲染占位变量与冷却状态附加故事
+                    try {
+                        net.minecraft.client.MinecraftClient mc = net.minecraft.client.MinecraftClient.getInstance();
+                        com.tool.looseprince.config.FeatureConfig cfg = com.tool.looseprince.config.ConfigManager.getInstance().getFeatureConfig("divinity");
+                        int seconds = cfg != null ? cfg.getIntOption("creatorCooldownSeconds", 900) : 900;
+                        int amount = cfg != null ? cfg.getIntOption("creatorGiveAmount", 1) : 1;
+                        String mode = net.minecraft.text.Text.translatable(amount >= 0 ? "item.looseprinces-tool.creator_divinity.mode.give" : "item.looseprinces-tool.creator_divinity.mode.take").getString();
+                        String keyTip = net.minecraft.text.Text.translatable("item.looseprinces-tool.creator_divinity.key").getString();
+                        boolean cooling = false;
+                        try {
+                            var div = (com.tool.looseprince.feature.DivinityFeature) com.tool.looseprince.feature.FeatureRegistry.getInstance().getFeature("divinity");
+                            if (div != null && mc != null && mc.player != null && div.getDivineSilenceEffect() != null) {
+                                cooling = mc.player.hasStatusEffect(div.getDivineSilenceEffect());
+                            }
+                        } catch (Throwable ignored) {}
+                        // 将每一行中出现的三个 %s 依次替换为 key/mode/seconds
+                        fmt = (s) -> {
+                            String r = s;
+                            if (r.contains("%s")) r = r.replaceFirst("%s", java.util.regex.Matcher.quoteReplacement(keyTip));
+                            if (r.contains("%s")) r = r.replaceFirst("%s", java.util.regex.Matcher.quoteReplacement(mode));
+                            if (r.contains("%s")) r = r.replaceFirst("%s", String.valueOf(seconds));
+                            // 同时兼容 {key}/{mode}/{seconds} 形式
+                            r = r.replace("{key}", keyTip).replace("{mode}", mode).replace("{seconds}", String.valueOf(seconds));
+                            return r;
+                        };
+                        if (cooling) {
+                            String lineKey = amount >= 0 ? "item.looseprinces-tool.creator_divinity.story.cooldown_line.give" : "item.looseprinces-tool.creator_divinity.story.cooldown_line.take";
+                            String extra = net.minecraft.text.Text.translatable("item.looseprinces-tool.creator_divinity.story.cooldown",
+                                    net.minecraft.text.Text.translatable(lineKey)
+                            ).getString();
+                            java.util.ArrayList<String> extraList = new java.util.ArrayList<>();
+                            for (String ln : extra.split("\n")) extraList.add(ln);
+                            creatorCooldownLines = extraList;
+                            appendCreatorCooldownAfter = true; // 先展示默认故事，再追加新的故事
+                        }
+                    } catch (Throwable ignored) {}
+                }
+                lines.addAll(entry.getContentLinesWithContext(fmt));
+                if (appendCreatorCooldownAfter && !creatorCooldownLines.isEmpty()) {
+                    lines.add("------");
+                    lines.addAll(creatorCooldownLines);
+                }
+                try {
+                    MinecraftClient mc = MinecraftClient.getInstance();
+                    if (mc != null && mc.player != null && mc.getServer() != null) {
+                        var st = com.tool.looseprince.state.CodexState.get(mc.getServer().getPlayerManager().getPlayer(mc.player.getUuid()));
+                        st.markRead(id);
+                        st.save(mc.getServer().getPlayerManager().getPlayer(mc.player.getUuid()));
+                    }
+                } catch (Throwable ignored) {}
                 return lines;
             }
             lines.add(id); return lines;

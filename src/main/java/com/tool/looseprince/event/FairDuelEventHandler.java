@@ -35,6 +35,16 @@ public class FairDuelEventHandler {
         // 每0.5秒给满足来源(物品或残缺神格效果)的玩家赋予1.5秒公平对决效果
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             FairDuelService.tickGrantEffect(server);
+            try {
+                for (net.minecraft.server.network.ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
+                    if (com.tool.looseprince.logic.FairDuelLogic.hasAnyFairDuelSource(p)) {
+                        var st = com.tool.looseprince.state.CodexState.get(p);
+                        st.unlock("fair_duel");
+                        st.unlock("fair_duel_effect");
+                        st.save(p);
+                    }
+                }
+            } catch (Throwable ignored) {}
         });
     }
 

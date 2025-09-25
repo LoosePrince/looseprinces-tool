@@ -3,7 +3,6 @@
 	"package": "com.tool.looseprince.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ExampleMixin",
 		"PlayerEntityMixin",
 		"LivingEntityFairDuelMixin",
 		"ItemEntitySoulBindingMixin",

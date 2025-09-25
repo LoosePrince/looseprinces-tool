@@ -1,6 +1,6 @@
 package com.tool.looseprince.mixin;
 
-import com.tool.looseprince.util.SoulBindingUtils;
+import com.tool.looseprince.logic.SoulBindingLogic;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -23,8 +23,8 @@ public abstract class PlayerInventorySoulBindingMixin {
     private void lpt$writeOwnerOnSetStack(int slot, ItemStack stack, CallbackInfo ci) {
         if (!(player instanceof ServerPlayerEntity serverPlayer)) return;
         if (stack == null || stack.isEmpty()) return;
-        if (!SoulBindingUtils.hasSoulBinding(stack)) return;
-        SoulBindingUtils.ensureOwner(stack, serverPlayer);
+        if (!SoulBindingLogic.hasSoulBinding(stack)) return;
+        SoulBindingLogic.ensureOwner(stack, serverPlayer);
     }
 }
 

@@ -1,10 +1,8 @@
 package com.tool.looseprince.mixin;
 
 import com.tool.looseprince.LoosePrincesTool;
-import com.tool.looseprince.feature.FairDuelFeature;
-import com.tool.looseprince.feature.DivinityFeature;
-import com.tool.looseprince.feature.FeatureRegistry;
-import com.tool.looseprince.event.FairDuelEventHandler;
+import com.tool.looseprince.impl.FairDuelService;
+import com.tool.looseprince.logic.DivinityLogic;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -26,25 +24,17 @@ public abstract class LivingEntityFairDuelMixin {
     @Shadow public abstract float getMaxHealth();
 
     private float lp_fairduel_preHealth;
-    private DamageSource lp_fairduel_lastSource;
 
     @Inject(method = "damage", at = @At("HEAD"), cancellable = true)
     private void lp_fairduel_capturePreHealth(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         LivingEntity self = (LivingEntity) (Object) this;
         lp_fairduel_preHealth = self.getHealth();
-        lp_fairduel_lastSource = source;
-
         // 优先检查神力无敌（包含造物主）：完全阻止伤害
         if (self instanceof PlayerEntity playerVictim) {
-            DivinityFeature div = (DivinityFeature) FeatureRegistry.getInstance().getFeature("divinity");
-            if (div != null) {
-                boolean hasGodPower = div.getDivinePowerEffect() != null && playerVictim.hasStatusEffect(div.getDivinePowerEffect());
-                boolean hasCreator = div.getCreatorEffect() != null && playerVictim.hasStatusEffect(div.getCreatorEffect());
-                if (hasGodPower || hasCreator) {
-                    LoosePrincesTool.LOGGER.info("[Divinity] Invulnerable (god/creator) active, cancel damage for {}", playerVictim.getName().getString());
-                    cir.setReturnValue(false); // 完全阻止伤害处理
-                    return;
-                }
+            if (DivinityLogic.isGodLikeActive(playerVictim)) {
+                LoosePrincesTool.LOGGER.info("[Divinity] Invulnerable (god/creator) active, cancel damage for {}", playerVictim.getName().getString());
+                cir.setReturnValue(false); // 完全阻止伤害处理
+                return;
             }
         }
     }
@@ -56,21 +46,12 @@ public abstract class LivingEntityFairDuelMixin {
             return; // 仅在服务端执行
         }
 
-        FairDuelFeature feature = (FairDuelFeature) FeatureRegistry.getInstance().getFeature("fair_duel");
-        if (feature == null || !feature.isEnabled()) {
-            return;
-        }
-        FairDuelEventHandler handler = feature.getEventHandler();
-        if (handler == null) {
-            return;
-        }
-
         // 1) 记录玩家对目标造成的实际伤害
         Entity attacker = source.getAttacker() != null ? source.getAttacker() : source.getSource();
         if (attacker instanceof PlayerEntity playerAttacker && self != playerAttacker) {
             float dealt = Math.max(0.0f, lp_fairduel_preHealth - self.getHealth());
             if (dealt > 0.0f) {
-                handler.recordPlayerDealtDamage(playerAttacker, self, dealt);
+                FairDuelService.recordPlayerDealtDamage(playerAttacker, self, dealt);
                 LoosePrincesTool.LOGGER.debug("[FairDuel][record] attacker={} target={} dealt={}",
                         playerAttacker.getName().getString(), self.getName().getString(), dealt);
             }
@@ -81,7 +62,7 @@ public abstract class LivingEntityFairDuelMixin {
             // 神力效果已在HEAD中处理，这里不再检查
 
             // 检查是否应用公平对决调整
-            float adjustedDamage = handler.modifyIncomingDamage(playerVictim, attacker, amount);
+            float adjustedDamage = FairDuelService.maybeAdjustIncomingDamage(playerVictim, attacker, amount);
             
             // 如果调整后的伤害与原伤害不同，直接设置生命值（绕过抗性提升等减伤）
             if (adjustedDamage != amount) {

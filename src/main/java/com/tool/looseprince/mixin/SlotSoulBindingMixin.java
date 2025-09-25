@@ -2,6 +2,7 @@ package com.tool.looseprince.mixin;
 
 import com.tool.looseprince.impl.SoulBindingService;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -22,6 +23,10 @@ public abstract class SlotSoulBindingMixin {
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
         if (serverPlayer.getAbilities() != null && serverPlayer.getAbilities().creativeMode) return; // 创造模式不拦截
         Slot self = (Slot) (Object) this;
+        // 允许玩家从自己的物品栏丢弃（不拦截 PlayerInventory）
+        if (self.inventory instanceof PlayerInventory) {
+            return;
+        }
         ItemStack stack = self.getStack();
         if (SoulBindingService.shouldPreventContainerTake(serverPlayer, stack)) {
             cir.setReturnValue(false);

@@ -1,7 +1,5 @@
 package com.tool.looseprince.util;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

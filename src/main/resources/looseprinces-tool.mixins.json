@@ -8,7 +8,8 @@
 		"ItemEntitySoulBindingMixin",
 		"PlayerInventorySoulBindingMixin",
 		"SlotSoulBindingMixin",
-		"ItemEntitySoulBindingDamageMixin"
+		"ItemEntitySoulBindingDamageMixin",
+		"ItemStackConsumeBlockMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

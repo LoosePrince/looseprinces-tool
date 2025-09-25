@@ -67,7 +67,7 @@ public final class CodexScreens {
 			context.fill(this.listX, this.listY - 18, this.listX + this.listW, this.listY + this.listH, 0x55000000);
 			// left header: 词条目录
 			int headerColor = 0xFFFFFF;
-			context.drawText(this.textRenderer, Text.translatable("screen.looseprinces-tool.codex.catalog"), this.listX + 6, this.listY - 14, headerColor, false);
+			context.drawText(this.textRenderer, Text.translatable("screen.looseprinces-tool.codex.catalog"), this.listX + 6, this.listY - 11, headerColor, false);
             int visible = this.listH / this.itemH;
             int start = Math.max(0, this.listScroll / this.itemH);
             int end = Math.min(categories.size(), start + visible + 1);

@@ -107,7 +107,7 @@ public class ConfigManager {
      * 创建默认配置
      */
     private Config createDefaultConfig() {
-        Config defaultConfig = new Config("1.0.5");
+        Config defaultConfig = new Config("1.0.6");
 
         // 添加飞行符文的默认配置
         FeatureConfig flyingRuneConfig = new FeatureConfig(true);
@@ -152,7 +152,7 @@ public class ConfigManager {
         boolean needsSave = false;
 
         if (config.getVersion() == null) {
-            config.setVersion("1.0.5");
+            config.setVersion("1.0.6");
             needsSave = true;
         }
 
@@ -211,7 +211,7 @@ public class ConfigManager {
         Object toml = buildTomlConfig(configFile, true);
         invokeNoArgs(toml, "load");
 
-        String version = (String) invoke(toml, "getOrElse", new Class[]{Object.class, Object.class}, new Object[]{"version", "1.0.5"});
+        String version = (String) invoke(toml, "getOrElse", new Class[]{Object.class, Object.class}, new Object[]{"version", "1.0.6"});
         Config loaded = new Config(version);
 
         Object featuresCfg = invoke(toml, "get", new Class[]{Object.class}, new Object[]{"features"});

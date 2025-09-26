@@ -9,7 +9,11 @@
 		"PlayerInventorySoulBindingMixin",
 		"SlotSoulBindingMixin",
 		"ItemEntitySoulBindingDamageMixin",
-		"ItemStackConsumeBlockMixin"
+		"ItemStackConsumeBlockMixin",
+		"SlotCursedDiscardInsertMixin",
+		"ItemEntityCursedDiscardMixin",
+		"PlayerInventoryCursedOwnerMixin",
+		"ScreenHandlerCursedDiscardMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

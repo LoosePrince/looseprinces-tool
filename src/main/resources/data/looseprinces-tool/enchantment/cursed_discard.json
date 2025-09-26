@@ -1,0 +1,16 @@
+{
+  "description": {
+    "translate": "enchantment.looseprinces-tool.cursed_discard"
+  },
+  "curse": true,
+  "supported_items": "#minecraft:enchantable/durability",
+  "weight": 1,
+  "max_level": 1,
+  "anvil_cost": 10,
+  "min_cost": { "base": 25, "per_level_above_first": 0 },
+  "max_cost": { "base": 60, "per_level_above_first": 0 },
+  "slots": [ "any" ],
+  "effects": {}
+}
+
+

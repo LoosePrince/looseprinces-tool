@@ -11,6 +11,7 @@ import com.tool.looseprince.feature.FlyingRuneFeature;
 import com.tool.looseprince.feature.BindingEnchantmentFeature;
 import com.tool.looseprince.feature.SoulBindingFeature;
 import com.tool.looseprince.feature.FairDuelFeature;
+import com.tool.looseprince.feature.CursedDiscardFeature;
 import com.tool.looseprince.feature.DivinityFeature;
 import com.tool.looseprince.registry.ModItemGroups;
 import com.tool.looseprince.register.CodexRegistrar;
@@ -68,6 +69,8 @@ public class LoosePrincesTool implements ModInitializer {
 
 		// 物品禁用/冷却拦截
 		com.tool.looseprince.event.ItemRestrictionEventHandler.register();
+		// 丢弃诅咒保留事件
+		com.tool.looseprince.event.CursedDiscardEventHandler.register();
 
 		// 战利品注入与首次补发
 		com.tool.looseprince.event.LootInjectionHandler.register();
@@ -135,6 +138,9 @@ public class LoosePrincesTool implements ModInitializer {
 		
 		// 注册灵魂绑定附魔功能
 		registry.registerFeature(new SoulBindingFeature());
+
+		// 注册丢弃诅咒功能
+		registry.registerFeature(new CursedDiscardFeature());
 
 		// 注册公平对决功能
 		registry.registerFeature(new FairDuelFeature());

@@ -13,6 +13,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.registry.entry.RegistryEntry;
 
 import java.util.UUID;
 
@@ -37,6 +39,36 @@ public final class SoulBindingUtils {
      */
     public static boolean hasSoulBinding(ItemStack stack) {
         return getSoulBindingLevel(stack) > 0;
+    }
+
+    /**
+     * 物品是否具有"丢弃诅咒"附魔
+     */
+    public static boolean hasCursedDiscard(ItemStack stack) {
+        try {
+            ItemEnchantmentsComponent comp = EnchantmentHelper.getEnchantments(stack);
+            java.util.Set<RegistryEntry<Enchantment>> set = comp.getEnchantments();
+            for (RegistryEntry<Enchantment> e : set) {
+                if (e.matchesKey(com.tool.looseprince.feature.CursedDiscardFeature.CURSED_DISCARD)) {
+                    return comp.getLevel(e) > 0;
+                }
+            }
+        } catch (Throwable ignored) {}
+        return false;
+    }
+
+    /**
+     * 是否拥有"绑定类"特性（灵魂绑定 或 丢弃诅咒）
+     */
+    private static boolean isEnchantedBook(ItemStack stack) {
+        try {
+            return stack != null && stack.getItem() instanceof net.minecraft.item.EnchantedBookItem;
+        } catch (Throwable ignored) { return false; }
+    }
+
+    public static boolean hasBindingLike(ItemStack stack) {
+        if (isEnchantedBook(stack)) return false; // 附魔书不参与绑定显示/写入
+        return hasSoulBinding(stack) || hasCursedDiscard(stack);
     }
 
     /**
@@ -68,7 +100,8 @@ public final class SoulBindingUtils {
      */
     public static void ensureOwner(ItemStack stack, ServerPlayerEntity player) {
         if (stack == null || stack.isEmpty() || player == null) return;
-        if (!hasSoulBinding(stack)) return;
+        if (isEnchantedBook(stack)) return; // 附魔书不写入拥有者
+        if (!hasBindingLike(stack)) return;
         NbtCompound nbt = getCustomData(stack);
 
         // 如果尚未记录拥有者，则写入 UUID 与当前名称
@@ -99,7 +132,8 @@ public final class SoulBindingUtils {
      */
     public static boolean isOwner(ServerPlayerEntity player, ItemStack stack) {
         if (player == null || stack == null || stack.isEmpty()) return false;
-        if (!hasSoulBinding(stack)) return false;
+        if (isEnchantedBook(stack)) return false; // 附魔书不判定拥有者
+        if (!hasBindingLike(stack)) return false;
         NbtCompound nbt = getCustomData(stack);
         if (nbt == null || !nbt.containsUuid(NBT_OWNER_UUID)) return false;
         try {
@@ -135,7 +169,7 @@ public final class SoulBindingUtils {
      * 生成 Tooltip 文本，如：已绑定至: 玩家名(uuid)
      */
     public static Text getBoundTooltip(ItemStack stack) {
-        if (!hasSoulBinding(stack) || !hasOwner(stack)) return null;
+        if (!hasBindingLike(stack) || !hasOwner(stack)) return null;
         String name = getOwnerName(stack);
         UUID uuid = getOwnerUuid(stack);
         String shown = name != null ? name : (uuid != null ? uuid.toString() : "?");

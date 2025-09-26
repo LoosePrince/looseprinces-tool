@@ -26,13 +26,18 @@ public class LoosePrincesToolClient implements ClientModInitializer {
 		// 追加"已绑定至"Tooltip
 		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
 			try {
-				SoulBindingFeature feature = (SoulBindingFeature) FeatureRegistry.getInstance()
-					.getFeature("soul_binding");
-				if (feature != null && feature.isEnabled() && feature.shouldShowOwnerTooltip()) {
+				boolean show = false;
+				try {
+					SoulBindingFeature feature = (SoulBindingFeature) FeatureRegistry.getInstance().getFeature("soul_binding");
+					show = feature != null && feature.isEnabled() && feature.shouldShowOwnerTooltip();
+				} catch (Throwable ignored) {}
+				try {
+					com.tool.looseprince.feature.CursedDiscardFeature cursed = (com.tool.looseprince.feature.CursedDiscardFeature) FeatureRegistry.getInstance().getFeature("cursed_discard");
+					show = show || (cursed != null && cursed.isEnabled() && cursed.shouldShowOwnerTooltip());
+				} catch (Throwable ignored) {}
+				if (show) {
 					Text extra = SoulBindingUtils.getBoundTooltip(stack);
-					if (extra != null) {
-						lines.add(extra);
-					}
+					if (extra != null) lines.add(extra);
 				}
 			} catch (Exception e) {
 				// 忽略错误，可能是功能尚未注册

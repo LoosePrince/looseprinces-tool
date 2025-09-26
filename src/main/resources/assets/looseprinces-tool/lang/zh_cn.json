@@ -5,6 +5,7 @@
   "itemGroup.looseprinces-tool.main": "LoosePrince的工具箱",
   "enchantment.looseprinces-tool.binding": "绑定",
   "enchantment.looseprinces-tool.soul_binding": "灵魂绑定",
+  "enchantment.looseprinces-tool.cursed_discard": "丢弃诅咒",
   "tooltip.looseprinces-tool.bound_to": "已绑定至: %s%s",
   "item.looseprinces-tool.fair_duel": "公平对决",
   "item.looseprinces-tool.fair_duel.tooltip.line1": "根据持有者对其它生物的造成的伤害之于生物生命上限的百分比调整玩家受到的伤害（无视减伤和附加）为相同百分比。",

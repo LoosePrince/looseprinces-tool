@@ -32,6 +32,30 @@ public abstract class PlayerEntityMixin {
         
         try {
             BindingService.saveOnDeath(player, getInventory());
+            // 追加：丢弃诅咒的死亡保留
+            try {
+                // 使用带玩家上下文过滤：仅“拥有者==player”的绑定/丢弃诅咒/典籍 才保留；非拥有者（非绑定者）死亡应正常掉落
+                com.tool.looseprince.impl.KeepOnDeathService.saveOnDeath(player, getInventory(), (p, stack) -> {
+                    try {
+                        if (stack == null || stack.isEmpty()) return false;
+                        // 典籍：仅拥有者保留
+                        if (stack.getItem() == com.tool.looseprince.register.CodexRegistrar.getMysticTome()) {
+                            return com.tool.looseprince.util.SoulBindingUtils.isOwner(p, stack);
+                        }
+                        // 附魔书不参与
+                        if (stack.getItem() instanceof net.minecraft.item.EnchantedBookItem) return false;
+                        // 灵魂绑定：仅拥有者保留
+                        if (com.tool.looseprince.util.SoulBindingUtils.hasSoulBinding(stack)) {
+                            return com.tool.looseprince.util.SoulBindingUtils.isOwner(p, stack);
+                        }
+                        // 丢弃诅咒：仅拥有者保留
+                        if (com.tool.looseprince.util.SoulBindingUtils.hasCursedDiscard(stack)) {
+                            return com.tool.looseprince.util.SoulBindingUtils.isOwner(p, stack);
+                        }
+                    } catch (Throwable ignored) {}
+                    return false;
+                });
+            } catch (Throwable ignored) {}
             
         } catch (Exception e) {
             // 如果处理过程中出现错误，记录日志但不影响正常游戏流程

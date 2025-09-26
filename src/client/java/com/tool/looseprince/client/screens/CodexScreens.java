@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
+import com.tool.looseprince.util.SoulBindingUtils;
 
 public final class CodexScreens {
     private CodexScreens() {}
@@ -22,6 +23,8 @@ public final class CodexScreens {
         private int listScroll;
 		private int listX, listY, listW, listH, itemH;
 		private int uiX, uiY, uiW, uiH;
+            private boolean blocked;
+            private int tabIndex; // 0=词条目录, 1=谣传目录
         protected MysticTomeScreen() {
             super(Text.translatable("screen.looseprinces-tool.codex.title"));
         }
@@ -52,6 +55,8 @@ public final class CodexScreens {
 			int contentW = this.uiX + this.uiW - gap - contentX;
 			int contentH = this.listH;
 			this.content = new ContentWidget(contentX, contentY, contentW, contentH);
+            this.blocked = isBlockedByNotOwner();
+            this.tabIndex = 0;
             buildCategories();
             if (!categories.isEmpty()) {
                 selectedIndex = 0;
@@ -65,9 +70,25 @@ public final class CodexScreens {
 			// panels background within bounded UI
 			context.fill(this.uiX, this.uiY, this.uiX + this.uiW, this.uiY + this.uiH, 0x66000000);
 			context.fill(this.listX, this.listY - 18, this.listX + this.listW, this.listY + this.listH, 0x55000000);
-			// left header: 词条目录
+			// left header: 标签栏（词条目录 / 谣传目录）
 			int headerColor = 0xFFFFFF;
-			context.drawText(this.textRenderer, Text.translatable("screen.looseprinces-tool.codex.catalog"), this.listX + 6, this.listY - 11, headerColor, false);
+			int tabBarY1 = this.listY - 18;
+			int tabBarY2 = this.listY;
+			int mid = this.listX + this.listW / 2;
+			// 背景
+			context.fill(this.listX, tabBarY1, this.listX + this.listW, tabBarY2, 0x55000000);
+			// 左标签：词条目录
+			int leftBg = this.tabIndex == 0 ? 0x8800AAFF : 0x33000000;
+			context.fill(this.listX, tabBarY1, mid, tabBarY2, leftBg);
+			Text tabLeft = Text.translatable("screen.looseprinces-tool.codex.catalog");
+			int leftTx = this.listX + 6;
+			context.drawText(this.textRenderer, tabLeft, leftTx, tabBarY1 + 6, headerColor, false);
+			// 右标签：谣传目录
+			int rightBg = this.tabIndex == 1 ? 0x8800AAFF : 0x33000000;
+			context.fill(mid, tabBarY1, this.listX + this.listW, tabBarY2, rightBg);
+			Text tabRight = Text.translatable("screen.looseprinces-tool.codex.rumors");
+			int tabRightW = this.textRenderer.getWidth(tabRight);
+			context.drawText(this.textRenderer, tabRight, this.listX + this.listW - tabRightW - 6, tabBarY1 + 6, headerColor, false);
             int visible = this.listH / this.itemH;
             int start = Math.max(0, this.listScroll / this.itemH);
             int end = Math.min(categories.size(), start + visible + 1);
@@ -87,12 +108,14 @@ public final class CodexScreens {
 							tx = this.listX + 6 + 18 + 4;
 						}
                         // 右侧类型标识
-						com.tool.looseprince.codex.CodexEntryType tp = entry.getType();
+					com.tool.looseprince.codex.CodexEntryType tp = entry.getType();
 						if (tp != null) {
-							Text chip = switch (tp) {
+						Text chip = switch (tp) {
 								case ITEM -> Text.translatable("screen.looseprinces-tool.codex.type.item");
 								case POTION -> Text.translatable("screen.looseprinces-tool.codex.type.potion");
 								case EFFECT -> Text.translatable("screen.looseprinces-tool.codex.type.effect");
+							case RUMOR -> Text.translatable("screen.looseprinces-tool.codex.type.rumor");
+							case DOCUMENT -> Text.translatable("screen.looseprinces-tool.codex.type.document");
 							};
 							int chipW = this.textRenderer.getWidth(chip);
 							context.drawText(this.textRenderer, chip, this.listX + this.listW - chipW - 6, y + 6, 0x9E9E9E, false);
@@ -123,6 +146,25 @@ public final class CodexScreens {
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             if (button == 0) {
+                // 点击标签切换
+                int tabY1 = this.listY - 18;
+                int tabY2 = this.listY;
+                if (mouseY >= tabY1 && mouseY < tabY2 && mouseX >= this.listX && mouseX < this.listX + this.listW) {
+                    int mid = this.listX + this.listW / 2;
+                    int newTab = mouseX < mid ? 0 : 1;
+                    if (!this.blocked && newTab != this.tabIndex) {
+                        this.tabIndex = newTab;
+                        this.listScroll = 0;
+                        buildCategories();
+                        if (!categories.isEmpty()) {
+                            selectedIndex = 0;
+                            content.setLines(buildContentFor(categoryIds.get(0)));
+                        } else if (this.content != null) {
+                            this.content.setLines(java.util.Collections.emptyList());
+                        }
+                    }
+                    return true;
+                }
                 if (mouseX >= this.listX && mouseX < this.listX + this.listW && mouseY >= this.listY && mouseY < this.listY + this.listH) {
                     int relY = (int)mouseY - this.listY + (this.listScroll % this.itemH);
                     int indexInView = relY / this.itemH;
@@ -151,9 +193,16 @@ public final class CodexScreens {
         private void buildCategories() {
             this.categories = new java.util.ArrayList<>();
             this.categoryIds = new java.util.ArrayList<>();
-            // self
-            this.categories.add(Text.translatable("item.looseprinces-tool.mystic_tome"));
-            this.categoryIds.add("self");
+            if (this.blocked) {
+                this.categories.add(Text.translatable("screen.looseprinces-tool.codex.blocked_title"));
+                this.categoryIds.add("blocked");
+                return;
+            }
+            // self 仅在 词条目录 显示
+            if (this.tabIndex == 0) {
+                this.categories.add(Text.translatable("item.looseprinces-tool.mystic_tome"));
+                this.categoryIds.add("self");
+            }
             // 从玩家持久化数据读取 ids，并在注册表中查找词条定义
             MinecraftClient mc = MinecraftClient.getInstance();
             if (mc != null && mc.player != null && mc.getServer() != null) {
@@ -163,8 +212,12 @@ public final class CodexScreens {
                     for (String id : ids) {
                         var entry = com.tool.looseprince.codex.CodexRegistry.get(id);
                         if (entry != null) {
-                            this.categories.add(entry.getTitle());
-                            this.categoryIds.add(id);
+                            com.tool.looseprince.codex.CodexEntryType tp = entry.getType();
+                            boolean isRumor = tp == com.tool.looseprince.codex.CodexEntryType.RUMOR;
+                            if ((this.tabIndex == 1 && isRumor) || (this.tabIndex == 0 && !isRumor)) {
+                                this.categories.add(entry.getTitle());
+                                this.categoryIds.add(id);
+                            }
                         }
                     }
                 } catch (Exception ignored) {}
@@ -173,6 +226,11 @@ public final class CodexScreens {
 
         private java.util.List<String> buildContentFor(String id) {
             java.util.List<String> lines = new java.util.ArrayList<>();
+            if ("blocked".equals(id)) {
+                lines.add(Text.translatable("screen.looseprinces-tool.codex.blocked_title").getString());
+                lines.add(Text.translatable("screen.looseprinces-tool.codex.blocked").getString());
+                return lines;
+            }
             var entry = com.tool.looseprince.codex.CodexRegistry.get(id);
             if (entry != null) {
                 lines.add(entry.getTitle().getString());
@@ -217,6 +275,18 @@ public final class CodexScreens {
                         }
                     } catch (Throwable ignored) {}
                 }
+                if ("fair_duel".equals(id)) {
+                    try {
+                        com.tool.looseprince.config.FeatureConfig cfg = com.tool.looseprince.config.ConfigManager.getInstance().getFeatureConfig("fair_duel");
+                        double ratio = cfg != null ? cfg.getDoubleOption("damageRatio", 1.0) : 1.0;
+                        java.util.function.Function<String, String> prev = fmt;
+                        fmt = (s) -> {
+                            String r = prev.apply(s);
+                            r = r.replace("{ratio}", String.valueOf(ratio));
+                            return r;
+                        };
+                    } catch (Throwable ignored) {}
+                }
                 lines.addAll(entry.getContentLinesWithContext(fmt));
                 if (appendCreatorCooldownAfter && !creatorCooldownLines.isEmpty()) {
                     lines.add("------");
@@ -233,6 +303,28 @@ public final class CodexScreens {
                 return lines;
             }
             lines.add(id); return lines;
+        }
+
+        private boolean isBlockedByNotOwner() {
+            try {
+                MinecraftClient mc = MinecraftClient.getInstance();
+                if (mc == null || mc.player == null) return false;
+                net.minecraft.item.ItemStack main = mc.player.getMainHandStack();
+                net.minecraft.item.ItemStack off = mc.player.getOffHandStack();
+                return isTomeHeldByOther(mc, main) || isTomeHeldByOther(mc, off);
+            } catch (Throwable ignored) {}
+            return false;
+        }
+
+        private boolean isTomeHeldByOther(MinecraftClient mc, net.minecraft.item.ItemStack stack) {
+            try {
+                if (stack == null || stack.isEmpty()) return false;
+                if (stack.getItem() != com.tool.looseprince.register.CodexRegistrar.getMysticTome()) return false;
+                java.util.UUID owner = SoulBindingUtils.getOwnerUuid(stack);
+                if (owner == null) return false;
+                return mc.player != null && !owner.equals(mc.player.getUuid());
+            } catch (Throwable ignored) {}
+            return false;
         }
 
         class ContentWidget {

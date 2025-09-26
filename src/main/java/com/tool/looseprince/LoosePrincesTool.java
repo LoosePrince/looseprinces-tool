@@ -69,6 +69,9 @@ public class LoosePrincesTool implements ModInitializer {
 		// 物品禁用/冷却拦截
 		com.tool.looseprince.event.ItemRestrictionEventHandler.register();
 
+		// 战利品注入与首次补发
+		com.tool.looseprince.event.LootInjectionHandler.register();
+
 		// 注册服务器端网络处理
 		CreatorNetwork.registerServerReceiver();
 

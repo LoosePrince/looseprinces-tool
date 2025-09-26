@@ -9,6 +9,8 @@ public final class CodexState {
 
     public boolean isGivenOnce() { return getInternal().givenOnce; }
     public void setGivenOnce(boolean v) { getInternal().givenOnce = v; }
+    public boolean isAncientCityFirstLootGiven() { return getInternal().ancientCityFirstLootGiven; }
+    public void setAncientCityFirstLootGiven(boolean v) { getInternal().ancientCityFirstLootGiven = v; }
 
     public java.util.Set<String> getUnlockedEntries() { return getInternal().unlocked; }
     public void unlock(String id) { if (id != null && !id.isEmpty()) getInternal().unlocked.add(id); }

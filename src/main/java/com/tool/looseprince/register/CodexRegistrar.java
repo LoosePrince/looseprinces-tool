@@ -23,7 +23,7 @@ public final class CodexRegistrar {
         if (MYSTIC_TOME == null) {
             try {
                 Item.Settings tome = new Item.Settings().maxCount(1).rarity(Rarity.UNCOMMON);
-                Item.Settings manu = new Item.Settings().maxCount(1).rarity(Rarity.COMMON);
+                Item.Settings manu = new Item.Settings().maxCount(16).rarity(Rarity.COMMON);
                 MYSTIC_TOME = new MysticTomeItem(tome);
                 UNKNOWN_MANUSCRIPT = new UnknownManuscriptItem(manu);
                 Registry.register(Registries.ITEM, Identifier.of(LoosePrincesTool.MOD_ID, "mystic_tome"), MYSTIC_TOME);
@@ -68,6 +68,7 @@ public final class CodexRegistrar {
                     "item.looseprinces-tool.fair_duel",
                     "item.looseprinces-tool.fair_duel.tooltip.line1",
                     "item.looseprinces-tool.fair_duel.tooltip.line2",
+                    "item.looseprinces-tool.fair_duel.usage",
                     "item.looseprinces-tool.fair_duel.story"
             ));
             // 公平对决（效果）
@@ -105,6 +106,128 @@ public final class CodexRegistrar {
                     "item.looseprinces-tool.imperfect_divinity.detail",
                     "item.looseprinces-tool.imperfect_divinity.story"
             ));
+            // 未知来源的手稿（源条目）
+            CodexRegistry.register("unknown_manuscript", CodexRegistry.simple(
+                    "unknown_manuscript",
+                    com.tool.looseprince.codex.CodexEntryType.DOCUMENT,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "item.looseprinces-tool.unknown_manuscript",
+                    "item.looseprinces-tool.unknown_manuscript.story"
+            ));
+            // 谣传词条
+            CodexRegistry.register("rumor_1", CodexRegistry.simple(
+                    "rumor_1",
+                    com.tool.looseprince.codex.CodexEntryType.RUMOR,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "codex.looseprinces-tool.rumor.1.title",
+                    "codex.looseprinces-tool.rumor.1"
+            ));
+            CodexRegistry.register("rumor_2", CodexRegistry.simple(
+                    "rumor_2",
+                    com.tool.looseprince.codex.CodexEntryType.RUMOR,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "codex.looseprinces-tool.rumor.2.title",
+                    "codex.looseprinces-tool.rumor.2"
+            ));
+            // 更多谣传词条
+            CodexRegistry.register("rumor_3", CodexRegistry.simple(
+                    "rumor_3",
+                    com.tool.looseprince.codex.CodexEntryType.RUMOR,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "codex.looseprinces-tool.rumor.3.title",
+                    "codex.looseprinces-tool.rumor.3"
+            ));
+            CodexRegistry.register("rumor_4", CodexRegistry.simple(
+                    "rumor_4",
+                    com.tool.looseprince.codex.CodexEntryType.RUMOR,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "codex.looseprinces-tool.rumor.4.title",
+                    "codex.looseprinces-tool.rumor.4"
+            ));
+            CodexRegistry.register("rumor_5", CodexRegistry.simple(
+                    "rumor_5",
+                    com.tool.looseprince.codex.CodexEntryType.RUMOR,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "codex.looseprinces-tool.rumor.5.title",
+                    "codex.looseprinces-tool.rumor.5"
+            ));
+            CodexRegistry.register("rumor_6", CodexRegistry.simple(
+                    "rumor_6",
+                    com.tool.looseprince.codex.CodexEntryType.RUMOR,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "codex.looseprinces-tool.rumor.6.title",
+                    "codex.looseprinces-tool.rumor.6"
+            ));
+            CodexRegistry.register("rumor_7", CodexRegistry.simple(
+                    "rumor_7",
+                    com.tool.looseprince.codex.CodexEntryType.RUMOR,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "codex.looseprinces-tool.rumor.7.title",
+                    "codex.looseprinces-tool.rumor.7"
+            ));
+            CodexRegistry.register("rumor_8", CodexRegistry.simple(
+                    "rumor_8",
+                    com.tool.looseprince.codex.CodexEntryType.RUMOR,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "codex.looseprinces-tool.rumor.8.title",
+                    "codex.looseprinces-tool.rumor.8"
+            ));
+            CodexRegistry.register("rumor_9", CodexRegistry.simple(
+                    "rumor_9",
+                    com.tool.looseprince.codex.CodexEntryType.RUMOR,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "codex.looseprinces-tool.rumor.9.title",
+                    "codex.looseprinces-tool.rumor.9"
+            ));
+            CodexRegistry.register("rumor_10", CodexRegistry.simple(
+                    "rumor_10",
+                    com.tool.looseprince.codex.CodexEntryType.RUMOR,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "codex.looseprinces-tool.rumor.10.title",
+                    "codex.looseprinces-tool.rumor.10"
+            ));
+            CodexRegistry.register("rumor_11", CodexRegistry.simple(
+                    "rumor_11",
+                    com.tool.looseprince.codex.CodexEntryType.RUMOR,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "codex.looseprinces-tool.rumor.11.title",
+                    "codex.looseprinces-tool.rumor.11"
+            ));
+            CodexRegistry.register("rumor_12", CodexRegistry.simple(
+                    "rumor_12",
+                    com.tool.looseprince.codex.CodexEntryType.RUMOR,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "codex.looseprinces-tool.rumor.12.title",
+                    "codex.looseprinces-tool.rumor.12"
+            ));
+            CodexRegistry.register("rumor_13", CodexRegistry.simple(
+                    "rumor_13",
+                    com.tool.looseprince.codex.CodexEntryType.RUMOR,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "codex.looseprinces-tool.rumor.13.title",
+                    "codex.looseprinces-tool.rumor.13"
+            ));
+            CodexRegistry.register("rumor_14", CodexRegistry.simple(
+                    "rumor_14",
+                    com.tool.looseprince.codex.CodexEntryType.RUMOR,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "codex.looseprinces-tool.rumor.14.title",
+                    "codex.looseprinces-tool.rumor.14"
+            ));
+            CodexRegistry.register("rumor_15", CodexRegistry.simple(
+                    "rumor_15",
+                    com.tool.looseprince.codex.CodexEntryType.RUMOR,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "codex.looseprinces-tool.rumor.15.title",
+                    "codex.looseprinces-tool.rumor.15"
+            ));
+            CodexRegistry.register("rumor_16", CodexRegistry.simple(
+                    "rumor_16",
+                    com.tool.looseprince.codex.CodexEntryType.RUMOR,
+                    () -> new net.minecraft.item.ItemStack(UNKNOWN_MANUSCRIPT),
+                    "codex.looseprinces-tool.rumor.16.title",
+                    "codex.looseprinces-tool.rumor.16"
+            ));
             // 造物主的神格
             CodexRegistry.register("creator_divinity", CodexRegistry.simple(
                     "creator_divinity",
@@ -113,6 +236,7 @@ public final class CodexRegistrar {
                     "item.looseprinces-tool.creator_divinity",
                     "item.looseprinces-tool.creator_divinity.normal.title",
                     "item.looseprinces-tool.creator_divinity.normal.detail",
+                    "item.looseprinces-tool.creator_divinity.usage.extra",
                     "item.looseprinces-tool.creator_divinity.story.normal"
             ));
             // 造物主
